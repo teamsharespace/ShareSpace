@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  HOST
+  ADMIN
+}
+
+enum SpaceStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Host-specific fields
+  hostProfile   HostProfile?
+  spaces        Space[]
+  reviews       Review[]    @relation("UserReviews")
+  bookings      Booking[]   @relation("UserBookings")
+  messages      Message[]   @relation("UserMessages")
+}
+
+model HostProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  bio         String?
+  phoneNumber String?
+  address     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Space {
+  id          String      @id @default(cuid())
+  title       String
+  description String
+  price       Float
+  currency    String      @default("USD")
+  capacity    Int
+  address     String
+  city        String
+  state       String
+  country     String
+  status      SpaceStatus @default(DRAFT)
+  amenities   String[]
+  images      String[]
+  hostId      String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  host        User        @relation(fields: [hostId], references: [id])
+  bookings    Booking[]
+  reviews     Review[]
+  categories  Category[]  @relation("SpaceCategories")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  spaces      Space[]  @relation("SpaceCategories")
+}
+
+model Booking {
+  id          String        @id @default(cuid())
+  spaceId     String
+  userId      String
+  startTime   DateTime
+  endTime     DateTime
+  totalPrice  Float
+  status      BookingStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  space       Space         @relation(fields: [spaceId], references: [id])
+  user        User          @relation("UserBookings", fields: [userId], references: [id])
+  review      Review?
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  rating      Int
+  comment     String
+  spaceId     String
+  userId      String
+  bookingId   String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  space       Space    @relation(fields: [spaceId], references: [id])
+  user        User     @relation("UserReviews", fields: [userId], references: [id])
+  booking     Booking  @relation(fields: [bookingId], references: [id])
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  content     String
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation("UserMessages", fields: [userId], references: [id])
+}
