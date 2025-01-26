@@ -1,5 +1,6 @@
+export const dynamic = 'force-dynamic'
 import { NextResponse } from "next/server"
-import { hash } from "bcrypt"
+import { hash } from "bcryptjs"
 import prisma from "@/lib/prisma"
 
 export async function POST(req: Request) {
