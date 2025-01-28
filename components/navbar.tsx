@@ -15,38 +15,27 @@ export default function Navbar() {
   const pathname = usePathname()
 
   return (
-    <nav className="border-b">
-      <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
+    <nav className=" relative z-10 max-w-full">
+      <div className=" flex items-center justify-between px-6 py-4 max-w-full mx-auto">
         <Link href="/" className="flex items-center space-x-2">
-          <span className="text-2xl font-bold">SpaceShare</span>
+          <span className="text-4xl font-bold text-white p-3">SpaceShare</span>
         </Link>
 
         <div className="hidden md:flex items-center space-x-6">
-          <Link href="/spaces" className="text-sm font-medium hover:text-primary">
+          <Link href="/spaces" className="text-sm text-white  font-medium ">
             Find Spaces
           </Link>
-          <Link href="/become-host" className="text-sm font-medium hover:text-primary">
+          <Link href="/become-host" className="text-sm text-white font-medium ">
             Become a Host
           </Link>
+          <Link href="/login" className="text-sm text-white font-medium ">
+            Login
+            </Link>
+          <Link href="/signup" className="text-sm  font-medium ">
           <Button variant="outline" className="flex items-center">
-            <Search className="h-4 w-4 mr-2" />
-            Search
+            Signup
           </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link href="/login">Login</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/signup">Sign Up</Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </Link>
         </div>
       </div>
     </nav>
