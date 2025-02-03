@@ -1,5 +1,4 @@
 'use client'
-
 import { ThemeProvider } from "./themeProvider"
 import { SessionProvider } from "./sessionProvider"
 import { Toaster } from "@/components/ui/toaster"
