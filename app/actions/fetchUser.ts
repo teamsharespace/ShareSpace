@@ -13,9 +13,14 @@ export interface UserSession {
 }
 export const fetchUser = async () => {
     const session = await getServerSession(NEXT_AUTH) as UserSession;
+
+    if (!session?.user?.id) {
+        return null;
+    }
+
     const user = await prisma.user.findUnique({
         where: {
-            id: session?.user?.id,
+            id: session.user.id,
         },
         select: {
             name: true,
@@ -31,8 +36,7 @@ export const fetchUser = async () => {
             reviews: true,
             messages: true,
         }
-    })
-    if (!user) return null;
+    });
+
     return user;
 }
-
