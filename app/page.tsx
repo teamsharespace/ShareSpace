@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { getUser } from "./lib/getUser"
+import { fetchUser } from "./actions/fetchUser"
 
 export default async function Home() {
-    const user = await getUser();
+    // example for fetching user through server actions
+    const user = await fetchUser();
     return (
         <div className="min-h-screen">
             {/* Hero Section */}

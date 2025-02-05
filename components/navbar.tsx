@@ -7,8 +7,14 @@ import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { LogoutButton } from "./authUi"
+import { fetchUser } from "@/app/actions/fetchUser"
 
 export default function Navbar() {
+    //example of fetching user data in client side
+    const [user, setUser] = useState<any>(null)
+    useEffect(()=>{
+        fetchUser().then(setUser)
+    },[])
     const pathname = usePathname()
     const [isScrolled, setIsScrolled] = useState(false)
     const { data: session } = useSession();

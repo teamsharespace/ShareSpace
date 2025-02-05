@@ -1,8 +1,9 @@
+"use server"
 import { getServerSession } from "next-auth"
 import prisma from "@/lib/prisma";
-import { NEXT_AUTH } from "./auth";
+import { NEXT_AUTH } from "../lib/auth";
 
-interface UserSession {
+export interface UserSession {
     user: {
         name: string | null,
         email: string,
@@ -10,7 +11,7 @@ interface UserSession {
         id: string,
     } | null,
 }
-export const getUser = async () => {
+export const fetchUser = async () => {
     const session = await getServerSession(NEXT_AUTH) as UserSession;
     const user = await prisma.user.findUnique({
         where: {
@@ -34,3 +35,4 @@ export const getUser = async () => {
     if (!user) return null;
     return user;
 }
+
