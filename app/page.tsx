@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { getUser } from "./lib/getUser"
 
-export default function Home() {
+export default async function Home() {
+    const user = await getUser();
     return (
         <div className="min-h-screen">
             {/* Hero Section */}

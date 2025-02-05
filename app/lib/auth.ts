@@ -5,7 +5,6 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import prisma from "@/lib/prisma"
 import bcrypt from "bcrypt"
 import { NextAuthOptions } from "next-auth";
-import { signIn } from "next-auth/react";
 
 export const NEXT_AUTH: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
