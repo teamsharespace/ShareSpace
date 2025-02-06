@@ -8,8 +8,10 @@ import { Search } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { LogoutButton } from "./authUi"
 import { fetchUser } from "@/app/actions/fetchUser"
+import Signup from "@/components/spacecomp/signup"
 
 export default function Navbar() {
+    const [loginPopup, showLoginPopup] = useState(false);
     //example of fetching user data in client side
     const [user, setUser] = useState<any>(null)
     useEffect(()=>{
@@ -67,20 +69,16 @@ export default function Navbar() {
                     </Link>
                     {!session ? (
                         <div className="hidden md:flex items-center space-x-6 ">
-                        <Link href="/login" className="text-sm text-white font-medium">
-                        <Button variant="outline" className="flex items-center text-black">
-                            Login
-                        </Button>
-                        </Link>
-                    <Link href="/signup" className="text-sm font-medium">
-                        <Button variant="outline" className="flex items-center">
+                        <Button onClick={()=>showLoginPopup(true)} variant="outline" className="flex items-center">
                             Signup
                         </Button>
-                    </Link>
                         </div>
                     ) : <LogoutButton />
                     }
                 </div>
+                {loginPopup && (
+                <Signup onClose={()=>showLoginPopup(false)}/>
+                )}
             </div>
         </nav>
     )
