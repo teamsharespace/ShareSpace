@@ -1,0 +1,5 @@
+<svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0 0H120V40H0V0Z" fill="white"/>
+  <path d="M10 10H110V30H10V10Z" fill="black"/>
+  <text x="60" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">SpaceShere</text>
+</svg>
