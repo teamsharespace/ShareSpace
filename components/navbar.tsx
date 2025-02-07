@@ -60,7 +60,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Right: Nav Links */}
-                <div className="hidden md:flex items-center space-x-6">
+                <div className=" md:flex items-center space-x-6">
                     <Link href="/spaces" className="text-sm text-white font-medium">
                         Find Spaces
                     </Link>
@@ -68,7 +68,7 @@ export default function Navbar() {
                         Become a Host
                     </Link>
                     {!session ? (
-                        <div className="hidden md:flex items-center space-x-6 ">
+                        <div className=" md:flex items-center space-x-6 ">
                         <Button onClick={()=>showLoginPopup(true)} variant="outline" className="flex items-center">
                             Signup
                         </Button>

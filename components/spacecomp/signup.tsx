@@ -25,31 +25,32 @@ const GoogleIcon = () => (
 )
 
 export default function Signup({onClose}: {onClose: () => void}) {
-    const handleGoogleSignIn = () => {
-        signIn("google", { redirect: false, callbackUrl: '/' })
-    }
-
+const handleGoogleSignIn = () => {
+    signIn('google', {
+      callbackUrl: '/',
+      prompt: 'consent',
+    });
+  };
     return (
   <div className="flex fixed top-0 left-0 justify-center items-center w-full h-full backdrop-blur-sm transition-opacity duration-300 ease-in-out">
-            <Card className="flex justify-center w-[1040px] h-[700px] shadow-lg relative">
-                <X className="absolute top-5 right-5 cursor-pointer rounded-full bg-white/60 px-2 w-8 h-8 text-grey-800"  onClick={onClose}/>
-                <CardContent className="flex items-center justify-between h-full w-full">
-                    <div className="flex flex-col h-full space-y-60 py-2 w-full">
-                        <span className="py-4 font-bold text-xl"> SpaceSphere</span>
-                        <div className="flex flex-col items-center -ml-5 w-full">
-                            <span className=" font-bold text-2xl mb-2">Welcome back</span>
-                            <span className="mb-4 text-sm  text-gray-500 font-medium">Sign in with google to continue now</span>
+            <Card className="flex justify-center w-4/5 md:w-2/3 xl:w-1/2   h-1/2 md:h-[65%]  shadow-lg relative">
+                <span className="absolute top-0 left-0 p-4 font-bold text-sm md:text-xl ">SpaceSphere</span>
+                <X className="absolute top-3 right-2 md:top-5 md:right-5 cursor-pointer rounded-full bg-white/60 px-2 w-8 h-8 text-grey-800"  onClick={onClose}/>
+                <CardContent className="flex items-center flex-col md:flex-row  md:justify-between h-full w-full">
+                        <div className="flex flex-col items-center md:-ml-5 w-full h-full md:h-auto">
+                            <span className=" font-bold text-xl xl:text-2xl hidden md:block mb-2 ">Welcome back</span>
+                        <Image src={"/assets/interior.jpg"} width={10} height={10} className="h-5/6 mt-12 md:hidden mb-4  w-full rounded-2xl" alt={"Image"} />
+                            <span className="mb-4 text-sm hidden md:block  text-gray-500 font-medium">Sign in with google to continue </span>
                             <Button
                                 variant="outline"
-                                className="w-[330px] bg-white font-bold text-gray-700 hover:bg-gray-50 border border-gray-300"
+                                className="px-8 lg:px-16 bg-white font-bold w-full md:w-auto text-gray-700 hover:bg-gray-50 border border-gray-300"
                                 onClick={handleGoogleSignIn}
                             >
                                 <GoogleIcon />
                                 Sign up with Google
                             </Button>
                         </div>
-                    </div>
-                        <Image src={"/assets/interior.jpg"} width={10} height={10} className="h-full mt-6 -mr-3 w-full rounded-2xl" alt={"Image"} />
+                        <Image src={"/assets/interior.jpg"} width={10} height={10} className="h-full mt-6 hidden md:block -mr-3 w-full rounded-2xl" alt={"Image"} />
                 </CardContent>
 
             </Card>

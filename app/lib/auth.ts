@@ -1,9 +1,6 @@
 import GoogleProvider from "next-auth/providers/google"
-import CredentialsProvider from "next-auth/providers/credentials";
-import FacebookProvider from "next-auth/providers/facebook"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import prisma from "@/lib/prisma"
-import bcrypt from "bcrypt"
 import { NextAuthOptions } from "next-auth";
 
 export const NEXT_AUTH: NextAuthOptions = {
@@ -20,46 +17,6 @@ export const NEXT_AUTH: NextAuthOptions = {
                 }
             }
         }),
-        FacebookProvider({
-            clientId: process.env.FACEBOOK_CLIENT_ID || " ",
-            clientSecret: process.env.FACEBOOK_CLIENT_SECRET || " ",
-        }),
-        CredentialsProvider({
-            name: 'Credentials',
-            credentials: {
-                email: {
-                    label: "email",
-                    type: "email",
-                },
-                password: {
-                    label: "Password",
-                    type: "password",
-                }
-            },
-            async authorize(credentials: any) {
-                if (!credentials.email || !credentials.password) return null;
-                const user = await prisma.user.findUnique({
-                    where: {
-                        email: credentials.email,
-                    }
-                });
-                if (user) {
-                    const isValid = await bcrypt.compare(credentials.password, user.password || " ");
-                    if (!isValid) return null;
-                    return user
-                } else {
-                    const hashedPassword = await bcrypt.hash(credentials.password, 10);
-                    const newUser = await prisma.user.create({
-                        data: {
-                            email: credentials.email,
-                            password: hashedPassword,
-                        }
-                    })
-                    return newUser
-                }
-
-            },
-        })
     ],
     secret: process.env.NEXTAUTH_SECRET,
     pages: {
@@ -79,7 +36,6 @@ export const NEXT_AUTH: NextAuthOptions = {
                     id: token.userId,
                 }
             }
-
             return session
         },
         jwt: ({ token, user }: any) => {
