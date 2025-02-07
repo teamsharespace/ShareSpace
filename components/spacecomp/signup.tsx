@@ -28,7 +28,7 @@ export default function Signup({onClose}: {onClose: () => void}) {
 const handleGoogleSignIn = () => {
     signIn('google', {
       callbackUrl: '/',
-      prompt: 'consent',
+       redirect: true,
     });
   };
     return (

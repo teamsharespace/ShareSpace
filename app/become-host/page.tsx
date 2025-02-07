@@ -17,29 +17,7 @@ export default function BecomeHostPage() {
 
   // Redirect if not logged in
   if (!session) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Card className="w-full max-w-md">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold">Authentication Required</CardTitle>
-            <CardDescription>
-              Please sign in to list your space
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button className="w-full" onClick={() => router.push("/login")}>
-              Sign in
-            </Button>
-            <p className="text-center text-sm text-muted-foreground">
-              Don&apos;t have an account?{" "}
-              <Button variant="link" className="p-0" onClick={() => router.push("/signup")}>
-                Sign up
-              </Button>
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    )
+        router.push('/');
   }
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {

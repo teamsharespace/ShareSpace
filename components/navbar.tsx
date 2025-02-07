@@ -9,8 +9,10 @@ import { useSession } from "next-auth/react"
 import { LogoutButton } from "./authUi"
 import { fetchUser } from "@/app/actions/fetchUser"
 import Signup from "@/components/spacecomp/signup"
+import { useRouter } from "next/navigation"
 
 export default function Navbar() {
+    const router = useRouter();
     const [loginPopup, showLoginPopup] = useState(false);
     //example of fetching user data in client side
     const [user, setUser] = useState<any>(null)
@@ -64,9 +66,9 @@ export default function Navbar() {
                     <Link href="/spaces" className="text-sm text-white font-medium">
                         Find Spaces
                     </Link>
-                    <Link href="/become-host" className="text-sm text-white font-medium">
+                    <div className="text-sm text-white font-medium cursor-pointer" onClick={()=>user?router.push('/become-host'):showLoginPopup(true)}>
                         Become a Host
-                    </Link>
+                    </div>
                     {!session ? (
                         <div className=" md:flex items-center space-x-6 ">
                         <Button onClick={()=>showLoginPopup(true)} variant="outline" className="flex items-center">

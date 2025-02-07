@@ -9,24 +9,20 @@ export const NEXT_AUTH: NextAuthOptions = {
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID || " ",
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || " ",
-            authorization: {
-                params: {
-                    prompt: "consent",
-                    access_type: "offline",
-                    response_type: "code"
-                }
+            httpOptions: {
+                timeout: 40000,
+                agent: undefined
             }
         }),
     ],
     secret: process.env.NEXTAUTH_SECRET,
     pages: {
-        signIn:"/signup",
+        signIn: "/",
         signOut: "/",
         error: "/auth/error",
     },
     session: {
         strategy: "jwt",
-        maxAge: 30 * 24 * 60 * 60, // 30 days
     },
     callbacks: {
         session: ({ session, token }: any) => {
