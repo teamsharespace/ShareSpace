@@ -141,90 +141,160 @@ export default function Home() {
       </section>
 
       {/* Modern Style Section */}
-      <section className="py-24 bg-neutral-100 dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-12 gap-16">
-            <div className="col-span-5">
-              <Image
-                src="https://images.unsplash.com/photo-1567016432779-094069958ea5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1780&q=80"
-                alt="Modern style furniture"
-                width={500}
-                height={700}
-                className="w-full h-[600px] object-cover"
-              />
+      <section className="py-12 sm:py-16 bg-white dark:bg-gray-900">
+  <div className="max-w-[1400px] mx-auto px-4">
+    <div className="flex justify-between items-end mb-8">
+      <h2 className="text-3xl sm:text-4xl font-light">
+        Explore Our
+        <br />
+        Collection
+      </h2>
+      <Button
+        variant="link"
+        className="text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-300"
+      >
+        View More
+        <ArrowRight className="ml-2 h-4 w-4" />
+      </Button>
+    </div>
+    <div className="grid grid-cols-12 gap-3 sm:gap-4">
+      {/* First Row */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative group overflow-hidden rounded-2xl col-span-12 sm:col-span-4 h-[300px] sm:h-[400px]"
+      >
+        <Link href="/collection/mondrian">
+          <div className="relative w-full h-full">
+            <Image
+              src="/placeholder.svg"
+              alt="Mondrian"
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
+            <div className="absolute bottom-6 left-6">
+              <h3 className="text-2xl font-light text-white">Mondrian</h3>
             </div>
-            <div className="col-span-7 flex flex-col justify-center">
-              <div className="mb-4 text-sm">
-                <span className="text-neutral-500 dark:text-neutral-400">Elegance</span> /{" "}
-                <span className="text-black dark:text-white">Products</span>
-              </div>
-              <h2 className="text-5xl font-light mb-6">
-              Earn income as a
-                <br />
-                SpaceShere host
-              </h2>
-              <p className="text-neutral-600 dark:text-neutral-300 mb-8 max-w-xl">
-              Put your space to work.
+          </div>
+        </Link>
+      </motion.div>
 
-Earn extra income by opening your doors to personal and professional gatherings in your area.
-              </p>
-              <Button
-                variant="outline"
-                className="rounded-none border-black dark:border-white text-black dark:text-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black w-fit"
-              >
-                Discover More
-              </Button>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="relative group overflow-hidden rounded-2xl col-span-12 sm:col-span-8 h-[300px] sm:h-[400px]"
+      >
+        <Link href="/collection/nirnia">
+          <div className="relative w-full h-full">
+            <Image
+              src="/placeholder.svg"
+              alt="Nirnia"
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
+            <div className="absolute bottom-6 left-6">
+              <h3 className="text-2xl font-light text-white">Nirnia</h3>
             </div>
           </div>
-        </div>
-      </section>
+        </Link>
+      </motion.div>
 
-      {/* Collection Grid */}
-      <section className="py-24 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between items-end mb-12">
-            <h2 className="text-4xl font-light">
-              Explore Our Proudly
-              <br />
-              Collection
-            </h2>
-            <Button
-              variant="link"
-              className="text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-300"
-            >
-              View More
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+      {/* Second Row */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="relative group overflow-hidden rounded-2xl col-span-12 sm:col-span-8 h-[300px] sm:h-[350px]"
+      >
+        <Link href="/collection/brera">
+          <div className="relative w-full h-full">
+            <Image
+              src="/placeholder.svg"
+              alt="Brera"
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
+            <div className="absolute bottom-6 left-6">
+              <h3 className="text-2xl font-light text-white">Brera</h3>
+            </div>
           </div>
-          <div className="grid grid-cols-12 gap-8">
-            {collections.map((collection, index) => (
-              <motion.div
-                key={collection.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`relative group overflow-hidden ${
-                  index === 0 || index === 3 ? "col-span-6" : "col-span-3"
-                } ${index < 3 ? "h-[400px]" : "h-[300px]"}`}
-              >
-                <Link href={`/collection/${collection.slug}`}>
-                  <Image
-                    src={collection.image || "/placeholder.svg"}
-                    alt={collection.name}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
-                  <div className="absolute bottom-6 left-6 flex items-center gap-4">
-                    <h3 className="text-2xl font-light text-white">{collection.name}</h3>
-                    <Circle className="w-4 h-4 fill-white" />
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+        </Link>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="relative group overflow-hidden rounded-2xl col-span-12 sm:col-span-4 h-[300px] sm:h-[350px]"
+      >
+        <Link href="/collection/artex">
+          <div className="relative w-full h-full">
+            <Image
+              src="/placeholder.svg"
+              alt="Artex"
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
+            <div className="absolute bottom-6 left-6">
+              <h3 className="text-2xl font-light text-white">Artex</h3>
+            </div>
           </div>
-        </div>
-      </section>
+        </Link>
+      </motion.div>
+
+      {/* Third Row */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="relative group overflow-hidden rounded-2xl col-span-12 sm:col-span-6 h-[300px] sm:h-[300px]"
+      >
+        <Link href="/collection/alea-pro">
+          <div className="relative w-full h-full">
+            <Image
+              src="/placeholder.svg"
+              alt="Alea Pro"
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
+            <div className="absolute bottom-6 left-6">
+              <h3 className="text-2xl font-light text-white">Alea Pro</h3>
+            </div>
+          </div>
+        </Link>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+        className="relative group overflow-hidden rounded-2xl col-span-12 sm:col-span-6 h-[300px] sm:h-[300px]"
+      >
+        <Link href="/collection/nirnia-living">
+          <div className="relative w-full h-full">
+            <Image
+              src="/placeholder.svg"
+              alt="Nirnia"
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
+            <div className="absolute bottom-6 left-6">
+              <h3 className="text-2xl font-light text-white">Nirnia</h3>
+            </div>
+          </div>
+        </Link>
+      </motion.div>
+    </div>
+  </div>
+</section>
 
       {/* Footer */}
       <footer className="py-20 bg-black text-white">
