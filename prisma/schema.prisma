@@ -95,27 +95,52 @@ model HostProfile {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Space {
-  id          String      @id @default(cuid())
-  title       String
-  description String
-  price       Float
-  currency    String      @default("USD")
-  capacity    Int
-  address     String
-  city        String
-  state       String
-  country     String
-  status      SpaceStatus @default(DRAFT)
-  amenities   String[]
-  images      String[]
-  hostId      String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+// model Space {
+//   id          String      @id @default(cuid())
+//   title       String
+//   description String
+//   price       Float
+//   currency    String      @default("USD")
+//   capacity    Int
+//   address     String
+//   city        String
+//   state       String
+//   country     String
+//   status      SpaceStatus @default(DRAFT)
+//   amenities   String[]
+//   images      String[]
+//   hostId      String
+//   createdAt   DateTime    @default(now())
+//   updatedAt   DateTime    @updatedAt
 
-  bookings    Booking[]
-  reviews     Review[]
-  categories  Category[]  @relation("SpaceCategories")
+//   bookings    Booking[]
+//   reviews     Review[]
+//   categories  Category[]  @relation("SpaceCategories")
+// }
+
+model Space {
+  id         String   @id @default(cuid())
+  name       String
+  about      String
+  price      Float
+  hostname   String
+  status     String
+  images     String[]
+  reviews    Float
+  categories String[]
+  amenities  String[]
+  people     Int
+  comments   String[]
+  currency   String   @default("INR")
+  createdAt  DateTime @default(now())
+  updateAt   DateTime @updatedAt
+  address    String
+  city       String
+  state      String
+  country    String
+  timeings   String[]
+  lat        Float?   // Latitude field
+  lng        Float?   // Longitude field
 }
 
 model Category {
@@ -125,7 +150,7 @@ model Category {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  spaces      Space[]  @relation("SpaceCategories")
+  // spaces      Space[]  @relation("SpaceCategories")
 }
 
 model Booking {
@@ -139,7 +164,7 @@ model Booking {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  space       Space         @relation(fields: [spaceId], references: [id])
+  // space       Space         @relation(fields: [spaceId], references: [id])
   user        User          @relation("UserBookings", fields: [userId], references: [id])
   review      Review?
 }
@@ -154,7 +179,7 @@ model Review {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  space       Space    @relation(fields: [spaceId], references: [id])
+  // space       Space    @relation(fields: [spaceId], references: [id])
   user        User     @relation("UserReviews", fields: [userId], references: [id])
   booking     Booking  @relation(fields: [bookingId], references: [id])
 }

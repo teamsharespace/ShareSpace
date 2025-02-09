@@ -97,3 +97,20 @@ h5,
 h6 {
   font-weight: 300;
 }
+
+.custom-marker .marker-content {
+  width: 45px;
+  height: 25px;
+  background-color: white;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  font-weight: bold;
+  transition: transform 0.3s ease-in-out;
+}
+
+.custom-marker:hover .marker-content {
+  transform: scale(1.2); 
+}
