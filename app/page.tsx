@@ -7,8 +7,6 @@ import { ArrowRight, Circle, Star, CircleIcon, Gem, ShieldCheck } from "lucide-r
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Navbar from "@/components/navbar"
-import HeroGeometric from "@/components/HeroGeometric"
-import { PromptingIsAllYouNeed } from "@/components/prompting"
 import { motion, useScroll, useTransform } from "framer-motion"
 
 // Define an array of hero images (ensure these URLs work)
@@ -88,7 +86,6 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <HeroGeometric/>
       {/* Call to Action */}
       <section className="py-32 bg-neutral-900 text-white">
         <div className="max-w-7xl mx-auto px-4">
