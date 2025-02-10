@@ -11,10 +11,7 @@ import { motion, useScroll, useTransform } from "framer-motion"
 
 // Define an array of hero images (ensure these URLs work)
 const heroImages = [
-  "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2070&q=80",
-  "https://images.unsplash.com/photo-1582407923096-e80cce41e4cf?auto=format&fit=crop&w=2070&q=80",
-  "https://images.unsplash.com/photo-1581579181804-1401123cd2c2?auto=format&fit=crop&w=2070&q=80"
+  "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
 ]
 
 // Randomly select one image on each reload
