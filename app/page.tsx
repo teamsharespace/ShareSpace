@@ -3,19 +3,39 @@
 import { useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Circle } from "lucide-react"
+import { ArrowRight, Circle, Star, CircleIcon, Gem, ShieldCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Navbar from "@/components/navbar"
 import { motion, useScroll, useTransform } from "framer-motion"
 
+// Define an array of hero images (ensure these URLs work)
+const heroImages = [
+  "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2070&q=80",
+  "https://images.unsplash.com/photo-1582407923096-e80cce41e4cf?auto=format&fit=crop&w=2070&q=80",
+  "https://images.unsplash.com/photo-1581579181804-1401123cd2c2?auto=format&fit=crop&w=2070&q=80"
+]
+
+// Randomly select one image on each reload
+const randomHeroImage = heroImages[Math.floor(Math.random() * heroImages.length)]
+
 export default function Home() {
   const heroRef = useRef(null)
+  const featuredRef = useRef(null)
+  
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
   })
+  
+  const { scrollYProgress: featuredProgress } = useScroll({
+    target: featuredRef,
+    offset: ["start end", "end start"]
+  })
+
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
+  const featuredY = useTransform(featuredProgress, [0, 1], [100, -100])
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth"
@@ -29,7 +49,7 @@ export default function Home() {
       <section ref={heroRef} className="relative h-screen overflow-hidden">
         <motion.div style={{ y }} className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+            src={randomHeroImage}
             alt="Luxurious living room"
             fill
             className="object-cover"
@@ -53,18 +73,38 @@ export default function Home() {
         >
           <div className="mt-auto mb-32 max-w-2xl">
             <h1 className="text-8xl font-light mb-6 text-white">
-            Find a space.
-            Fulfill your vision.<span className="text-neutral-300">.</span>
+              Find a space.
+              Fulfill your vision<span className="text-neutral-300">.</span>
             </h1>
             <p className="text-lg text-white mb-8 max-w-xl">
-              Creating spaces of extraordinary sophistication through our curated collection of contemporary furniture
-              and design pieces.
+              Creating spaces of extraordinary sophistication through our curated collection of contemporary furniture and design pieces.
             </p>
             <Button variant="outline" className="rounded-none border-white text-white hover:bg-white hover:text-black">
               View More
             </Button>
           </div>
         </motion.div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="py-32 bg-neutral-900 text-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center"
+          >
+            <h2 className="text-6xl font-light mb-8">Ready to Transform Your Space?</h2>
+            <p className="text-xl text-neutral-400 mb-12 max-w-2xl mx-auto">
+              Let's create something extraordinary together. Schedule a consultation with our design experts.
+            </p>
+            <Button variant="outline" className="rounded-none text-white border-white group">
+              Schedule Consultation
+              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </motion.div>
+        </div>
       </section>
 
       {/* Footer */}
@@ -74,8 +114,7 @@ export default function Home() {
             <div className="col-span-4">
               <Image src="/poliform-logo.svg" alt="SpaceShere" width={150} height={50} className="mb-6 invert" />
               <p className="text-neutral-400 mb-6">
-                Creating spaces of extraordinary sophistication through our curated collection of contemporary furniture
-                and design pieces.
+                Creating spaces of extraordinary sophistication through our curated collection of contemporary furniture and design pieces.
               </p>
               <div className="flex gap-4">
                 {["Facebook", "Twitter", "Instagram", "LinkedIn"].map((social) => (
@@ -123,19 +162,9 @@ export default function Home() {
   )
 }
 
-
 const footerLinks = [
   {
     title: "Company",
     links: ["About Us", "Careers", "Contact Us", "Sustainability"],
   },
-  {
-    title: "Products",
-    links: ["Living", "Bedroom", "Kitchen", "Outdoor"],
-  },
-  {
-    title: "Resources",
-    links: ["Blog", "FAQ", "Support", "Dealers"],
-  },
 ]
-
