@@ -19,10 +19,7 @@ export default function PaymentButton({ amount }: PaymentButtonProps) {
     });
   };
 
-  const validateMobileNumber = (number: string) => {
-    const regex = /^[0-9]{10}$/;
-    return regex.test(number);
-  };
+  const validateMobileNumber = (number: string) => /^[0-9]{10}$/.test(number);
 
   const handleMobileSubmit = async () => {
     if (!validateMobileNumber(mobileNumber)) {
@@ -43,27 +40,21 @@ export default function PaymentButton({ amount }: PaymentButtonProps) {
     try {
       const data = await fetch('/api/bookings/createOrder', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: amount,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount }),
       }).then((t) => t.json());
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
         amount: data.amount,
         currency: data.currency,
-        name: 'Your Company Name',
+        name: 'SpaceShere',
         description: 'Transaction Description',
         order_id: data.id,
         handler: async function (response: any) {
           const verificationData = await fetch('/api/bookings/verifyOrder', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
@@ -76,14 +67,8 @@ export default function PaymentButton({ amount }: PaymentButtonProps) {
             setShowMobileInput(false);
           }
         },
-        prefill: {
-          name: 'Customer Name',
-          email: 'customer@email.com',
-          contact: mobileNumber,
-        },
-        theme: {
-          color: '#3399cc',
-        },
+        prefill: { name: 'Customer Name', email: 'customer@email.com', contact: mobileNumber },
+        theme: { color: '#2563EB' },
       };
 
       const paymentObject = new window.Razorpay(options);
@@ -95,29 +80,30 @@ export default function PaymentButton({ amount }: PaymentButtonProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col items-center space-y-4">
       {!showMobileInput ? (
         <button
           onClick={() => setShowMobileInput(true)}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
         >
           Pay ₹{amount}
         </button>
       ) : (
-        <div className="space-y-3">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center border border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-700">Enter Mobile Number</h2>
           <input
             type="tel"
             value={mobileNumber}
             onChange={(e) => setMobileNumber(e.target.value)}
-            placeholder="Enter your mobile number"
-            className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="10-digit mobile number"
+            className="mt-3 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             maxLength={10}
           />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          <div className="flex space-x-2">
+          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          <div className="flex justify-between mt-4">
             <button
               onClick={handleMobileSubmit}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 focus:ring-2 focus:ring-green-400 transition duration-300"
             >
               Proceed to Pay
             </button>
@@ -127,7 +113,7 @@ export default function PaymentButton({ amount }: PaymentButtonProps) {
                 setError('');
                 setMobileNumber('');
               }}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              className="px-4 py-2 bg-gray-400 text-white rounded-lg shadow-md hover:bg-gray-500 transition duration-300"
             >
               Cancel
             </button>
