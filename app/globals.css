@@ -114,3 +114,17 @@ h6 {
 .custom-marker:hover .marker-content {
   transform: scale(1.2); 
 }
+
+/* Add to your global CSS or inside a Tailwind `@layer utilities` */
+.scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

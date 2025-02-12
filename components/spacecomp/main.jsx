@@ -33,7 +33,7 @@ function Main() {
     <div className="w-full mt-40">
       <div className={showMap ? 'grid lg:grid-cols-[2fr_1fr] gap-4' : ''}>
         {/* Left Side - Listings */}
-        <div className={`grid gap-6 ${showMap ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'}`}>
+        <div className={`grid gap-6 mx-5 my-5 ${showMap ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'}`}>
           {listings.map((listing) => (
             <div
               key={listing.id}
