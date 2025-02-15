@@ -14,8 +14,8 @@ import { motion, useScroll, useTransform } from "framer-motion"
 
 // Define an array of hero images relevant to Indian spaces
 const heroImages = [
-  "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80", // Modern Indian office space
-  "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80", // Luxury event space
+  "https://plus.unsplash.com/premium_photo-1684769161054-2fa9a998dcb6?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=https://spacepool.com/media/news/toa-heftiba-FV3GConVSss-unsplash_1.jpg.1064x654_q85_crop-smart.jpg", // Modern Indian office space
+  "https://spacepool.com/media/news/toa-heftiba-FV3GConVSss-unsplash_1.jpg.1064x654_q85_crop-smart.jpg", // Luxury event space
 ]
 
 const randomHeroImage = heroImages[Math.floor(Math.random() * heroImages.length)]
