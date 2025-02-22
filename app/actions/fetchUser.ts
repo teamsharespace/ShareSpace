@@ -25,16 +25,11 @@ export const fetchUser = async () => {
         select: {
             name: true,
             email: true,
-            password: false,
             emailVerified: false,
             image: true,
-            role: true,
             accounts: false,
             sessions: true,
-            hostProfile: true,
-            bookings: true,
-            reviews: true,
-            messages: true,
+            listings: true,
         }
     });
 

@@ -1,195 +1,212 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  USER
-  HOST
-  ADMIN
-}
-
-enum SpaceStatus {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
-}
-
-enum BookingStatus {
-  PENDING
-  CONFIRMED
-  CANCELLED
-  COMPLETED
-}
-
-model Account {
-  id                 String  @id @default(cuid())
-  userId             String  @map("user_id")
-  type               String
-  provider           String
-  providerAccountId  String  @map("provider_account_id")
-  refresh_token      String? @db.Text
-  access_token       String? @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String? @db.Text
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@map("accounts")
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique @map("session_token")
-  userId       String   @map("user_id")
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("sessions")
+generator client {
+    provider = "prisma-client-js"
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  password      String?
-  emailVerified DateTime? @map("email_verified")
-  image         String?
-  role          UserRole  @default(USER)
-  accounts      Account[]
-  sessions      Session[]
-  hostProfile   HostProfile?
-  bookings      Booking[]  @relation("UserBookings")
-  reviews       Review[]   @relation("UserReviews")
-  messages      Message[]  @relation("UserMessages")
+    id            String          @id @default(cuid())
+    name          String?
+    email         String          @unique
+    emailVerified DateTime?
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+    listings      Listing[]
+    // Optional for WebAuthn support
+    Authenticator Authenticator[]
 
-  @@map("users")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Listing {
+    id                  String              @id @default(cuid())
+    userId              String
+    progress            ListingProgress?
+    // address
+    address             String?
+    landmark            String?
+    city                String?
+    state               String?             @db.VarChar(18)
+    pincode             Int?
+    // space details
+    typeOfSpace         String?
+    overNightStays      Boolean?
+    hasParking          Boolean?            @default(false)
+    parkingOptions      ParkingOptions[]
+    parkingDescription  String?
+    securityCameras     Boolean?
+    // type of space
+    name                String?
+    description         String?
+    age                 String?
+    size                Int?
+    rules               String?
+    wifiName            String?
+    wifiPassword        String?
+    arrivalInstructions String?
+    // operating hours
+    operatingHours      OperatingHours[]
+    // upload photos
+    photos              Photo[]
+    //policies
+    agreesToPolicies    Boolean?
+    // cancellation policy
+    cancellationPolicy  CancellationPolicy?
+    // health and Safety
+    cleaningMeasures    CleaningMeasure[]
+    protectiveGear      ProtectiveGear[]
+    distanceMeasures    DistanceMeasure[]
+    covidSignage        CovidSignage[]
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ListingProgress {
+    id                          String   @id @default(cuid())
+    listingId                   String   @unique
+    listing                     Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    addressCompleted            Boolean? @default(false)
+    spaceDetailsCompleted       Boolean? @default(false)
+    photosCompleted             Boolean? @default(false)
+    policiesCompleted           Boolean? @default(false)
+    healthSafetyCompleted       Boolean? @default(false)
+    operatingHoursCompleted     Boolean? @default(false)
+    cancellationPolicyCompleted Boolean? @default(false)
+    typeOfSpaceCompleted        Boolean? @default(false)
+    updatedAt                   DateTime @updatedAt
+}
+
+model Photo {
+    id         String   @id @default(cuid())
+    url        String
+    uploadedAt DateTime @default(now())
+    listing    Listing? @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    listingId  String
+}
+
+model OperatingHours {
+    id        String    @id @default(cuid())
+    listingId String
+    listing   Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    dayOfWeek DayOfWeek
+    isOpen    Boolean?  @default(true)
+    openTime  String?
+    closeTime String?
+
+    @@unique([listingId, dayOfWeek])
+}
+
+model Account {
+    userId            String
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String?
+    access_token      String?
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String?
+    session_state     String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@id([provider, providerAccountId])
+}
+
+model Session {
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+    identifier String
+    token      String
+    expires    DateTime
 
-  @@unique([identifier, token])
-  @@map("verification_tokens")
+    @@id([identifier, token])
 }
 
-model HostProfile {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  bio         String?
-  phoneNumber String?
-  address     String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Authenticator {
+    credentialID         String  @unique
+    userId               String
+    providerAccountId    String
+    credentialPublicKey  String
+    counter              Int
+    credentialDeviceType String
+    credentialBackedUp   Boolean
+    transports           String?
 
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@id([userId, credentialID])
 }
 
-// model Space {
-//   id          String      @id @default(cuid())
-//   title       String
-//   description String
-//   price       Float
-//   currency    String      @default("USD")
-//   capacity    Int
-//   address     String
-//   city        String
-//   state       String
-//   country     String
-//   status      SpaceStatus @default(DRAFT)
-//   amenities   String[]
-//   images      String[]
-//   hostId      String
-//   createdAt   DateTime    @default(now())
-//   updatedAt   DateTime    @updatedAt
-
-//   bookings    Booking[]
-//   reviews     Review[]
-//   categories  Category[]  @relation("SpaceCategories")
-// }
-
-model Space {
-  id         String   @id @default(cuid())
-  name       String
-  about      String
-  price      Float
-  hostname   String
-  status     String
-  images     String[]
-  reviews    Float
-  categories String[]
-  amenities  String[]
-  people     Int
-  comments   String[]
-  currency   String   @default("INR")
-  createdAt  DateTime @default(now())
-  updateAt   DateTime @updatedAt
-  address    String
-  city       String
-  state      String
-  country    String
-  timeings   String[]
-  lat        Float?   // Latitude field
-  lng        Float?   // Longitude field
+enum ParkingOptions {
+    ONSITE
+    STREET
+    VALET
+    METERED_STREET
+    LOT
+    PAID_ONSITE
 }
 
-model Category {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // spaces      Space[]  @relation("SpaceCategories")
+enum DayOfWeek {
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+    SATURDAY
+    SUNDAY
 }
 
-model Booking {
-  id          String        @id @default(cuid())
-  spaceId     String
-  userId      String
-  startTime   DateTime
-  endTime     DateTime
-  totalPrice  Float
-  status      BookingStatus @default(PENDING)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-
-  // space       Space         @relation(fields: [spaceId], references: [id])
-  user        User          @relation("UserBookings", fields: [userId], references: [id])
-  review      Review?
+enum CancellationPolicy {
+    Very_Flexible
+    Flexible
+    Thirty_Day
+    Ninety_Day
 }
 
-model Review {
-  id          String   @id @default(cuid())
-  rating      Int
-  comment     String
-  spaceId     String
-  userId      String
-  bookingId   String   @unique
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // space       Space    @relation(fields: [spaceId], references: [id])
-  user        User     @relation("UserReviews", fields: [userId], references: [id])
-  booking     Booking  @relation(fields: [bookingId], references: [id])
+enum CleaningMeasure {
+    GUIDELINES_COMPLIANCE
+    HIGH_TOUCH_DISINFECTION
+    POROUS_MATERIALS_CLEANED
+    PROFESSIONAL_CLEANER
+    SPACED_BOOKINGS
 }
 
-model Message {
-  id          String   @id @default(cuid())
-  content     String
-  userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+enum ProtectiveGear {
+    DISINFECTING_WIPES
+    DISPOSABLE_GLOVES
+    DISPOSABLE_MASKS
+    HAND_SANITIZER
+}
 
-  user        User     @relation("UserMessages", fields: [userId], references: [id])
+enum DistanceMeasure {
+    LIMITED_CAPACITY
+    OUTDOOR_VENTILATION
+    HEPA_AIR_FILTERS
+    OUTDOOR_SPACE
+    RECONFIGURED_SPACE
+}
+
+enum CovidSignage {
+    CLEANING_CHECKLIST
+    COVID_GUIDELINES
+    DISTANCE_MARKERS
+    DIRECTIONAL_ARROWS
 }

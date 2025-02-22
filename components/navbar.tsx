@@ -14,18 +14,27 @@ import { useRouter } from "next/navigation"
 export default function Navbar() {
     const router = useRouter();
     const [loginPopup, showLoginPopup] = useState(false);
-    //example of fetching user data in client side
-    const [user, setUser] = useState<any>(null)
-    useEffect(()=>{
-        fetchUser().then(setUser)
-    },[])
+    const [user, setUser] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        fetchUser()
+            .then(userData => {
+                setUser(userData);
+                setIsLoading(false);
+            })
+            .catch(() => {
+                setIsLoading(false);
+            });
+    }, []);
+
     const pathname = usePathname()
     const [isScrolled, setIsScrolled] = useState(false)
     const { data: session } = useSession();
 
     useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50) // Turns black after scrolling 50px
+            setIsScrolled(window.scrollY > 50)
         }
 
         if (pathname === "/") {
@@ -34,17 +43,27 @@ export default function Navbar() {
         }
     }, [pathname])
 
+    const handleBecomeHost = () => {
+        if (!isLoading) {  // Only handle click if loading is complete
+            if (user) {
+                router.push('/becomeHost');
+            } else {
+                showLoginPopup(true);
+            }
+        }
+    };
+
     return (
         <nav
-            className={`w-full z-50 transition-all duration-300 ${pathname === "/"
-                ? isScrolled
-                    ? "fixed top-0 bg-black/90"
-                    : "fixed top-0 bg-transparent"
-                : "fixed bg-black"
-                }`}
+            className={`w-full z-50 transition-all duration-300 ${
+                pathname === "/"
+                    ? isScrolled
+                        ? "fixed top-0 bg-black/90"
+                        : "fixed top-0 bg-transparent"
+                    : "fixed bg-black"
+            }`}
         >
             <div className="flex items-center justify-between px-6 py-4 mx-auto">
-                {/* Left: Logo + Search (on non-homepage) */}
                 <div className="flex flex-row items-center">
                     <Link href="/" className="flex items-center space-x-2">
                         <span className="text-4xl font-bold text-white p-3">SpaceShare</span>
@@ -61,25 +80,30 @@ export default function Navbar() {
                     )}
                 </div>
 
-                {/* Right: Nav Links */}
-                <div className=" md:flex items-center space-x-6">
+                <div className="md:flex items-center space-x-6">
                     <Link href="/spaces" className="text-sm text-white font-medium">
                         Find Spaces
                     </Link>
-                    <div className="text-sm text-white font-medium cursor-pointer" onClick={()=>user?router.push('/become-host'):showLoginPopup(true)}>
+                    <div
+                        className="text-sm text-white font-medium cursor-pointer"
+                        onClick={handleBecomeHost}
+                    >
                         Become a Host
                     </div>
                     {!session ? (
-                        <div className=" md:flex items-center space-x-6 ">
-                        <Button onClick={()=>showLoginPopup(true)} variant="outline" className="flex items-center">
-                            Signup
-                        </Button>
+                        <div className="md:flex items-center space-x-6">
+                            <Button
+                                onClick={() => showLoginPopup(true)}
+                                variant="outline"
+                                className="flex items-center"
+                            >
+                                Signup
+                            </Button>
                         </div>
-                    ) : <LogoutButton />
-                    }
+                    ) : <LogoutButton />}
                 </div>
                 {loginPopup && (
-                <Signup onClose={()=>showLoginPopup(false)}/>
+                    <Signup onClose={() => showLoginPopup(false)}/>
                 )}
             </div>
         </nav>
