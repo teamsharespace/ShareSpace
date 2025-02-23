@@ -20,19 +20,13 @@ export async function createCancellationPolicy(data: FormValues, listingId: stri
     if (!listing || listing.userId != session?.user?.id) {
         return null;
     }
-    const policyMap = [
-        CancellationPolicy.Very_Flexible,
-        CancellationPolicy.Flexible,
-        CancellationPolicy.Ninety_Day,
-        CancellationPolicy.Thirty_Day,
-    ];
     try {
         await prisma?.listing?.update({
             where: {
                 id: listingId,
             },
             data: {
-                cancellationPolicy: policyMap[parseInt(cancellationPolicy)],
+                cancellationPolicy: cancellationPolicy as CancellationPolicy,
                 progress: {
                     upsert: {
                         create: {

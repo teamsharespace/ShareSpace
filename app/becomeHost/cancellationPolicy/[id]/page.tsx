@@ -1,5 +1,5 @@
 "use client"
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useForm, Controller } from "react-hook-form";
@@ -8,15 +8,19 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { createCancellationPolicy } from '@/app/actions/cancellationPolicy';
+import { fetchListingsToEdit } from '@/app/actions/fetchListingToEdit';
+import { Listing } from '@prisma/client';
 
 interface Policy {
     name: string;
+    id: string,
     rules: string[];
 }
 
 const POLICIES: Policy[] = [
     {
         name: "Very Flexible",
+        id: "VERY_FLEXIBLE",
         rules: [
             "Guests may cancel their Booking until 24 hours before the event start time and will receive a full refund (including all Fees) of their Booking Price.",
             "Bookings cancellations submitted less than 24 hours before the Event start time are not refundable."
@@ -24,6 +28,7 @@ const POLICIES: Policy[] = [
     },
     {
         name: "Flexible",
+        id: "FLEXIBLE",
         rules: [
             "Guests may cancel their Booking until 7 days before the event start time and will receive a full refund (including all Fees) of their Booking Price.",
             "Guests may cancel their Booking between 7 days and 24 hours before the event start time and receive a 50% refund (excluding Fees) of their Booking Price.",
@@ -32,6 +37,7 @@ const POLICIES: Policy[] = [
     },
     {
         name: "Standard 30 day",
+        id: "THIRTY_DAY",
         rules: [
             "Guests may cancel their Booking until 30 days before the event start time and will receive a full refund (including all Fees) of their Booking Price.",
             "Guests may cancel their Booking between 30 days and 7 days before the event start time and receive a 50% refund (excluding Fees) of their Booking Price.",
@@ -40,6 +46,7 @@ const POLICIES: Policy[] = [
     },
     {
         name: "Standard 90 day",
+        id: "NINETY_DAY",
         rules: [
             "Guests may cancel their Booking until 90 days before the event start time and will receive a full refund (including all Fees) of their Booking Price.",
             "Guests may cancel their Booking between 90 days and 14 days before the event start time and receive a 50% refund (excluding Fees) of their Booking Price.",
@@ -72,15 +79,13 @@ const CancellationPolicy: React.FC<CancellationPolicyProps> = ({
     const {
         control,
         handleSubmit,
-        watch
+        reset,
     } = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             cancellationPolicy: defaultPolicy || ''
         }
     });
-
-    const selectedPolicy = watch('cancellationPolicy');
 
     async function onSubmit(data: FormValues) {
         onPolicySelect?.(data.cancellationPolicy);
@@ -92,12 +97,23 @@ const CancellationPolicy: React.FC<CancellationPolicyProps> = ({
             console.error('Error submitting form:', error);
         }
     };
-
-    React.useEffect(() => {
-        if (selectedPolicy) {
-            handleSubmit(onSubmit)();
+    useEffect(() => {
+        async function getListingsToEdit() {
+            try {
+                if (listingId !== 'new') {
+                    const listingData = await fetchListingsToEdit(listingId) as Listing;
+                    console.log("cancellationPolicy: ", listingData.cancellationPolicy);
+                    reset({
+                        cancellationPolicy: listingData?.cancellationPolicy || ''
+                    })
+                }
+            } catch (error) {
+                console.error('Error fetching listing:', error);
+            }
         }
-    }, [selectedPolicy, handleSubmit, onSubmit]);
+        getListingsToEdit();
+    }, [listingId, reset])
+
 
     return <>
         <nav className={"w-full z-50 transition-all duration-300 fixed top-0 bg-black/90"}>
@@ -121,7 +137,7 @@ const CancellationPolicy: React.FC<CancellationPolicyProps> = ({
                     <hr className="border-t border-gray-200" />
 
                     <p className="text-gray-800 text-sm">
-                        <strong>Cancellation grace period:</strong> All Bookings are subject to Peerspace's Grace Period
+                        <strong>Cancellation grace period:</strong> All Bookings are subject to ShareSpace's Grace Period
                         policy which provides a full refund for Bookings cancelled within 24 hours from receipt
                         of a Booking Confirmation but no later than 48 hours prior to the Event start time.
                     </p>
@@ -140,7 +156,7 @@ const CancellationPolicy: React.FC<CancellationPolicyProps> = ({
                                         <div key={index} className="space-y-3">
                                             <div className="flex items-center gap-2">
                                                 <RadioGroupItem
-                                                    value={index.toString()}
+                                                    value={policy.id}
                                                     id={`policy-${index}`}
                                                     className="border-gray-400"
                                                 />
@@ -172,9 +188,7 @@ const CancellationPolicy: React.FC<CancellationPolicyProps> = ({
                                 <Button variant={"outline"} className="text-md font-semibold" >Back</Button>
                             </Link>
                             <Button
-                                className="text-md font-semibold bg-[#8559EC] hover:bg-[#7248d1]"
-                                onClick={handleSubmit(onSubmit)}
-                            >
+                                className="text-md font-semibold bg-[#8559EC] hover:bg-[#7248d1]" onClick={handleSubmit(onSubmit)} >
                                 Next
                             </Button>
                         </div>

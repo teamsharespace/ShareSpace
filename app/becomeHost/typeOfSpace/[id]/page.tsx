@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createTypeOfSpace } from '@/app/actions/typeOfSpace';
+import { fetchListingsToEdit } from '@/app/actions/fetchListingToEdit';
+import { Listing } from '@prisma/client';
 
 const listingSchema = z.object({
     spaceTitle: z.string().min(10, "Title must be at least 10 characters long"),
@@ -30,6 +32,7 @@ export default function ShareSpaceListing({ params }: {
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm<ListingFormData>({
         resolver: zodResolver(listingSchema),
@@ -44,6 +47,29 @@ export default function ShareSpaceListing({ params }: {
             arrivalInstructions: ''
         }
     });
+    useEffect(() => {
+        async function getListingsToEdit() {
+            try {
+                if (listingId !== 'new') {
+                    const listingData = await fetchListingsToEdit(listingId) as Listing;
+                    console.log("Listing Data", listingData);
+                    reset({
+                        spaceTitle: listingData?.name || '',
+                        spaceDescription: listingData?.description || '',
+                        bookingSize: listingData?.size || undefined,
+                        houseRules: listingData?.rules || '',
+                        allowedGuests: listingData?.age || 'All ages',
+                        wifiName: listingData?.wifiName || '',
+                        wifiPassword: listingData?.wifiPassword || '',
+                        arrivalInstructions: listingData?.arrivalInstructions || ''
+                    })
+                }
+            } catch (error) {
+                console.error('Error fetching listing:', error);
+            }
+        }
+        getListingsToEdit();
+    }, [listingId, reset])
 
     async function onSubmit(data: ListingFormData) {
         console.log('Form submitted with data:', data);

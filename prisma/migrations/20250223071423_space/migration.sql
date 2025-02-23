@@ -5,7 +5,7 @@ CREATE TYPE "ParkingOptions" AS ENUM ('ONSITE', 'STREET', 'VALET', 'METERED_STRE
 CREATE TYPE "DayOfWeek" AS ENUM ('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY');
 
 -- CreateEnum
-CREATE TYPE "CancellationPolicy" AS ENUM ('Very_Flexible', 'Flexible', 'Thirty_Day', 'Ninety_Day');
+CREATE TYPE "CancellationPolicy" AS ENUM ('VERY_FLEXIBLE', 'FLEXIBLE', 'THIRTY_DAY', 'NINETY_DAY');
 
 -- CreateEnum
 CREATE TYPE "CleaningMeasure" AS ENUM ('GUIDELINES_COMPLIANCE', 'HIGH_TOUCH_DISINFECTION', 'POROUS_MATERIALS_CLEANED', 'PROFESSIONAL_CLEANER', 'SPACED_BOOKINGS');
@@ -63,6 +63,23 @@ CREATE TABLE "Listing" (
     "covidSignage" "CovidSignage"[],
 
     CONSTRAINT "Listing_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ListingProgress" (
+    "id" TEXT NOT NULL,
+    "listingId" TEXT NOT NULL,
+    "addressCompleted" BOOLEAN DEFAULT false,
+    "spaceDetailsCompleted" BOOLEAN DEFAULT false,
+    "photosCompleted" BOOLEAN DEFAULT false,
+    "policiesCompleted" BOOLEAN DEFAULT false,
+    "healthSafetyCompleted" BOOLEAN DEFAULT false,
+    "operatingHoursCompleted" BOOLEAN DEFAULT false,
+    "cancellationPolicyCompleted" BOOLEAN DEFAULT false,
+    "typeOfSpaceCompleted" BOOLEAN DEFAULT false,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ListingProgress_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -142,6 +159,9 @@ CREATE TABLE "Authenticator" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "ListingProgress_listingId_key" ON "ListingProgress"("listingId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "OperatingHours_listingId_dayOfWeek_key" ON "OperatingHours"("listingId", "dayOfWeek");
 
 -- CreateIndex
@@ -154,7 +174,10 @@ CREATE UNIQUE INDEX "Authenticator_credentialID_key" ON "Authenticator"("credent
 ALTER TABLE "Listing" ADD CONSTRAINT "Listing_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Photo" ADD CONSTRAINT "Photo_listingId_fkey" FOREIGN KEY ("listingId") REFERENCES "Listing"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ListingProgress" ADD CONSTRAINT "ListingProgress_listingId_fkey" FOREIGN KEY ("listingId") REFERENCES "Listing"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Photo" ADD CONSTRAINT "Photo_listingId_fkey" FOREIGN KEY ("listingId") REFERENCES "Listing"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "OperatingHours" ADD CONSTRAINT "OperatingHours_listingId_fkey" FOREIGN KEY ("listingId") REFERENCES "Listing"("id") ON DELETE CASCADE ON UPDATE CASCADE;

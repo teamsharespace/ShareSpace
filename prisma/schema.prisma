@@ -175,10 +175,10 @@ enum DayOfWeek {
 }
 
 enum CancellationPolicy {
-    Very_Flexible
-    Flexible
-    Thirty_Day
-    Ninety_Day
+    VERY_FLEXIBLE
+    FLEXIBLE
+    THIRTY_DAY
+    NINETY_DAY
 }
 
 enum CleaningMeasure {

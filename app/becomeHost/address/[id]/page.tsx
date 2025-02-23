@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
@@ -10,6 +10,8 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { createAddress } from '@/app/actions/address';
 import { useRouter } from 'next/navigation';
+import { Listing } from '@prisma/client';
+import { fetchListingsToEdit } from '@/app/actions/fetchListingToEdit';
 
 const addressSchema = z.object({
     country: z.string(),
@@ -32,6 +34,7 @@ const CreateAddress = ({ params }: {
     const router = useRouter();
     const {
         register,
+        reset,
         handleSubmit,
         formState: { errors }
     } = useForm<FormAddress>({
@@ -46,9 +49,30 @@ const CreateAddress = ({ params }: {
         }
     });
 
+    useEffect(() => {
+        async function getListingsToEdit() {
+            try {
+                if (listingId !== 'new') {
+                    const listingData = await fetchListingsToEdit(listingId) as Listing;
+                    console.log("Listing Data", listingData);
+                    reset({
+                        country: 'India',
+                        address: listingData?.address || '',
+                        landmark: listingData?.landmark || '',
+                        city: listingData?.city || '',
+                        state: listingData?.state || '',
+                        pincode: listingData?.pincode || undefined,
+                    })
+                }
+            } catch (error) {
+                console.error('Error fetching listing:', error);
+            }
+        }
+        getListingsToEdit();
+    }, [listingId, reset])
     async function onSubmit(data: FormAddress) {
         try {
-            const newListingId = await createAddress(data,listingId) as string;
+            const newListingId = await createAddress(data, listingId) as string;
             router.push(`/becomeHost/spaceDetails/${newListingId}`)
         } catch (error) {
             console.error('Error submitting form:', error);

@@ -12,7 +12,7 @@ import { deleteSpace } from "../actions/deleteSpace"
 
 export default function BecomeHostPage() {
     const router = useRouter();
-    const {status } = useSession();
+    const { status } = useSession();
     const [listing, setListing] = useState<Listing[]>([]);
 
     async function handleSubmit() {
@@ -78,14 +78,16 @@ export default function BecomeHostPage() {
                         <h1 className="font-bold text-3xl ">Listings</h1>
                         <Button className="rounded-none  font-semibold p-6" variant={"outline"} onClick={handleSubmit}>Add a Space</Button>
                     </div>
-                    {listing?.map((listing) => (
+                    {listing?.length > 0 ? (listing?.map((listing) => (
                         <div className="border w-full h-24 flex flex-row items-center p-8 justify-between mb-10">
                             <span className="font-bold text-2xl">{listing.name}</span>
                             <div className="flex flex-row items-center gap-6">
                                 <Button className="w-24 h-12 rounded-none bg-[#8559EC] font-bold " onClick={() => handleResume(listing.id)} >Resume</Button>
                                 <Trash2 onClick={() => handleDeleteSpace(listing.id)} />
                             </div>
-                        </div>))}
+                        </div>))) : (
+                        <span className="text-xl font-medium text-gray-400">No Listings found :(</span>
+                    )}
                 </div>
             </main>
         </div>

@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import { createPolicy } from "@/app/actions/policies";
+import { fetchListingsToEdit } from "@/app/actions/fetchListingToEdit";
+import { Listing } from "@prisma/client";
 
 interface PolicyItem {
     name: string;
@@ -31,7 +33,7 @@ const policyFormSchema = z.object({
 
 export type PolicyFormValues = z.infer<typeof policyFormSchema>;
 
-export default function Policy({params}:{params: {id: string}}) {
+export default function Policy({ params }: { params: { id: string } }) {
     const listingId = params.id;
     const router = useRouter();
     const policies: PolicyItem[] = [
@@ -58,10 +60,25 @@ export default function Policy({params}:{params: {id: string}}) {
         defaultValues: {
             policiesAccepted: false,
         },
-    });
+    }); useEffect(() => {
+        async function getListingsToEdit() {
+            try {
+                if (listingId !== 'new') {
+                    const listingData = await fetchListingsToEdit(listingId) as Listing;
+                    console.log("Listing Data", listingData);
+                   form.reset({
+                        policiesAccepted: listingData?.agreesToPolicies || false,
+                    })
+                }
+            } catch (error) {
+                console.error('Error fetching listing:', error);
+            }
+        }
+        getListingsToEdit();
+    }, [listingId, form.reset])
     async function onSubmit(data: PolicyFormValues) {
         try {
-            await createPolicy(data,listingId);
+            await createPolicy(data, listingId);
             router.push(`/becomeHost/showListing/${listingId}`);
         } catch (error) {
             console.error('error submitting form:', error);
@@ -90,7 +107,6 @@ export default function Policy({params}:{params: {id: string}}) {
                                     I agree and understand that as a ShareSpace host I am required to:
                                 </span>
 
-                                {/* Display all policy items */}
                                 <div className="space-y-4">
                                     {policies.map((policy, index) => (
                                         <div key={index} className="flex flex-col">
@@ -104,7 +120,6 @@ export default function Policy({params}:{params: {id: string}}) {
                                     ))}
                                 </div>
 
-                                {/* Single checkbox for accepting all policies */}
                                 <FormField
                                     control={form.control}
                                     name="policiesAccepted"

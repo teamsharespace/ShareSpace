@@ -8,6 +8,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createSpaceDetails } from "@/app/actions/spaceDetails"
+import { useEffect } from "react"
+import { fetchListingsToEdit } from "@/app/actions/fetchListingToEdit"
+import { Listing } from "@prisma/client"
 
 const spaceFormSchema = z.object({
     spaceType: z.string().min(1, { message: "Space type is required" }),
@@ -39,6 +42,7 @@ export default function Space({params}:{
         register,
         handleSubmit,
         control,
+        reset,
         watch,
         formState: { errors }
     } = useForm<SpaceFormValues>({
@@ -53,6 +57,27 @@ export default function Space({params}:{
         }
     })
 
+    useEffect(() => {
+        async function getListingsToEdit() {
+            try {
+                if (listingId !== 'new') {
+                    const listingData = await fetchListingsToEdit(listingId) as Listing;
+                    console.log("Listing Data", listingData);
+                    reset({
+                        spaceType: listingData?.typeOfSpace || '',
+                        overnightStays: listingData?.overNightStays || false,
+                        hasParking: listingData?.hasParking || false,
+                        parkingOptions: listingData?.parkingOptions || [],
+                        parkingDescription: listingData?.parkingDescription || '',
+                        hasSecurityCameras: listingData?.securityCameras || false,
+                    })
+                }
+            } catch (error) {
+                console.error('Error fetching listing:', error);
+            }
+        }
+        getListingsToEdit();
+    }, [listingId, reset])
     const hasParking = watch("hasParking")
 
     async function onSubmit(data: SpaceFormValues) {
