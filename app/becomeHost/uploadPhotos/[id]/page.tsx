@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { X, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { uploadPhotos } from "@/app/actions/uploadPhotos"
+import { fetchListingsToEdit } from "@/app/actions/fetchListingToEdit"
+import { Listing } from "@prisma/client"
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
@@ -53,12 +55,29 @@ export default function UploadPhotos({params}: {
         setValue,
         formState: { errors },
         trigger,
+        reset,
     } = useForm<UploadPhotosValues>({
         resolver: zodResolver(uploadPhotosSchema),
         defaultValues: {
             photos: [],
         },
     })
+    useEffect(() => {
+        async function getListingsToEdit() {
+            try {
+                if (listingId !== 'new') {
+                    const listingData = await fetchListingsToEdit(listingId) as Listing;
+                    console.log("Listing Data", listingData);
+                    reset({
+                        photos: [],
+                    })
+                }
+            } catch (error) {
+                console.error('Error fetching listing:', error);
+            }
+        }
+        getListingsToEdit();
+    }, [listingId, reset])
 
     async function onSubmit() {
         setIsSubmitting(true)

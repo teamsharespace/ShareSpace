@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { NEXT_AUTH } from "../lib/auth"
 import { UserSession } from "./fetchUser";
 import { SpaceFormValues } from "../becomeHost/spaceDetails/[id]/page";
+import { ParkingOptions } from "@prisma/client";
 
 
 export async function createSpaceDetails(data: SpaceFormValues, listingId: string) {
@@ -27,6 +28,7 @@ export async function createSpaceDetails(data: SpaceFormValues, listingId: strin
                 typeOfSpace: spaceType,
                 overNightStays: overnightStays,
                 hasParking: hasParking,
+                parkingOptions: parkingOptions as ParkingOptions[],
                 parkingDescription: parkingDescription,
                 securityCameras: hasSecurityCameras,
                 progress: {

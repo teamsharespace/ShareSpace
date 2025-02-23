@@ -26,12 +26,12 @@ const spaceFormSchema = z.object({
 export type SpaceFormValues = z.infer<typeof spaceFormSchema>
 
 const PARKING_OPTIONS = [
-    "Free onsite parking",
-    "Free street parking",
-    "Valet",
-    "Paid onsite parking",
-    "Metered street parking",
-    "Nearby parking lot",
+    {name: "Free onsite parking", value: "ONSITE"},
+    {name: "Free street parking", value: "STREET"},
+    {name: "Valet", value: "VALET"},
+    {name: "Paid onsite parking", value: "METERED_STREET"},
+    {name: "Metered street parking", value: "LOT"},
+    {name: "Nearby parking lot", value: "PAID_ONSITE"},
 ]
 
 export default function Space({ params }: {
@@ -140,7 +140,7 @@ export default function Space({ params }: {
                                         <Button
                                             type="button"
                                             className={`rounded-none text-md border-r-0 p-6 ${field.value ? 'bg-black text-white' : ''}`}
-                                            variant={"outline"}
+                                            variant={"minimal"}
                                             onClick={() => field.onChange(true)}
                                         >
                                             Yes
@@ -148,7 +148,7 @@ export default function Space({ params }: {
                                         <Button
                                             type="button"
                                             className={`rounded-none text-md p-6 ${!field.value ? 'bg-black text-white' : ''}`}
-                                            variant={"outline"}
+                                            variant={"minimal"}
                                             onClick={() => field.onChange(false)}
                                         >
                                             No
@@ -173,7 +173,7 @@ export default function Space({ params }: {
                                         <Button
                                             type="button"
                                             className={`rounded-none text-md border-r-0 p-6 ${field.value ? 'bg-black text-white' : ''}`}
-                                            variant={"outline"}
+                                            variant={"minimal"}
                                             onClick={() => field.onChange(true)}
                                         >
                                             Yes
@@ -181,7 +181,7 @@ export default function Space({ params }: {
                                         <Button
                                             type="button"
                                             className={`rounded-none text-md p-6 ${!field.value ? 'bg-black text-white' : ''}`}
-                                            variant={"outline"}
+                                            variant={"minimal"}
                                             onClick={() => field.onChange(false)}
                                         >
                                             No
@@ -196,27 +196,27 @@ export default function Space({ params }: {
                                 <span className="font-semibold pt-6">Select all that apply</span>
                                 <div className="grid grid-cols-2 gap-8">
                                     {PARKING_OPTIONS.map((option) => (
-                                        <div key={option} className="flex flex-row items-center space-x-2">
+                                        <div key={option.value} className="flex flex-row items-center space-x-2">
                                             <Controller
                                                 control={control}
                                                 name="parkingOptions"
                                                 render={({ field }) => (
                                                     <Checkbox
-                                                        id={option}
+                                                        id={option.value}
                                                         className="border-gray-400"
-                                                        checked={field.value?.includes(option) || false}
+                                                        checked={field.value?.includes(option.value) || false}
                                                         onCheckedChange={(checked) => {
                                                             const currentValues = field.value || [];
                                                             const newValues = checked
-                                                                ? [...currentValues, option]
-                                                                : currentValues.filter(value => value !== option);
+                                                                ? [...currentValues, option.value]
+                                                                : currentValues.filter(value => value !== option.value);
                                                             field.onChange(newValues);
                                                         }}
                                                     />
                                                 )}
                                             />
-                                            <label htmlFor={option} className="text-sm font-normal">
-                                                {option}
+                                            <label htmlFor={option.name} className="text-sm font-normal">
+                                                {option.name}
                                             </label>
                                         </div>
                                     ))}
@@ -257,7 +257,7 @@ export default function Space({ params }: {
                                         <Button
                                             type="button"
                                             className={`rounded-none text-md border-r-0 p-6 ${field.value ? 'bg-black text-white' : ''}`}
-                                            variant={"outline"}
+                                            variant={"minimal"}
                                             onClick={() => field.onChange(true)}
                                         >
                                             Yes
@@ -265,7 +265,7 @@ export default function Space({ params }: {
                                         <Button
                                             type="button"
                                             className={`rounded-none text-md p-6 ${!field.value ? 'bg-black text-white' : ''}`}
-                                            variant={"outline"}
+                                            variant={"minimal"}
                                             onClick={() => field.onChange(false)}
                                         >
                                             No

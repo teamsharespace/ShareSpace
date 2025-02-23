@@ -64,17 +64,7 @@ const formSchema = z.object({
 
 export type FormValues = z.infer<typeof formSchema>;
 
-interface CancellationPolicyProps {
-    onPolicySelect?: (policyIndex: string) => void;
-    defaultPolicy?: string;
-    params: { id: string };
-}
-
-const CancellationPolicy: React.FC<CancellationPolicyProps> = ({
-    onPolicySelect,
-    defaultPolicy,
-    params
-}) => {
+export default function CancellationPolicy({params}:{params:{id:string}}) {
     const listingId = params.id;
     const [isSubmitting, setIsSubmitting] = useState(false)
     const router = useRouter();
@@ -85,13 +75,12 @@ const CancellationPolicy: React.FC<CancellationPolicyProps> = ({
     } = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            cancellationPolicy: defaultPolicy || ''
+            cancellationPolicy: '',
         }
     });
 
     async function onSubmit(data: FormValues) {
         setIsSubmitting(true);
-        onPolicySelect?.(data.cancellationPolicy);
         //console.log(data);
         try {
             await createCancellationPolicy(data, listingId);
@@ -214,4 +203,3 @@ const CancellationPolicy: React.FC<CancellationPolicyProps> = ({
     </>
 };
 
-export default CancellationPolicy;
