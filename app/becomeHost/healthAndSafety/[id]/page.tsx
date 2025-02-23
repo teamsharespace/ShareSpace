@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { createHealthAndSafety } from '@/app/actions/healthAndSafety';
+import { Loader2 } from 'lucide-react';
 
 const CLEANING_MEASURE_MAP = {
     'cleaning-1': 'GUIDELINES_COMPLIANCE',
@@ -342,7 +343,14 @@ export default function Cleaning({ params }: { params: { id: string } }) {
                             type="submit"
                             disabled={isSubmitting}
                         >
-                            {isSubmitting ? 'Saving...' : 'Next'}
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Saving...
+                                    </>
+                                ) : (
+                                    'Next'
+                                )}
                         </Button>
                     </div>
                 </form>

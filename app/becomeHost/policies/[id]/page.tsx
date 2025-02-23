@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { createPolicy } from "@/app/actions/policies";
 import { fetchListingsToEdit } from "@/app/actions/fetchListingToEdit";
 import { Listing } from "@prisma/client";
+import { Loader2 } from "lucide-react";
 
 interface PolicyItem {
     name: string;
@@ -35,6 +36,7 @@ export type PolicyFormValues = z.infer<typeof policyFormSchema>;
 
 export default function Policy({ params }: { params: { id: string } }) {
     const listingId = params.id;
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const router = useRouter();
     const policies: PolicyItem[] = [
         {
@@ -66,7 +68,7 @@ export default function Policy({ params }: { params: { id: string } }) {
                 if (listingId !== 'new') {
                     const listingData = await fetchListingsToEdit(listingId) as Listing;
                     console.log("Listing Data", listingData);
-                   form.reset({
+                    form.reset({
                         policiesAccepted: listingData?.agreesToPolicies || false,
                     })
                 }
@@ -77,11 +79,14 @@ export default function Policy({ params }: { params: { id: string } }) {
         getListingsToEdit();
     }, [listingId, form.reset])
     async function onSubmit(data: PolicyFormValues) {
+        setIsSubmitting(true);
         try {
             await createPolicy(data, listingId);
             router.push(`/becomeHost/showListing/${listingId}`);
         } catch (error) {
             console.error('error submitting form:', error);
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -153,12 +158,20 @@ export default function Policy({ params }: { params: { id: string } }) {
                                             Back
                                         </Button>
                                     </Link>
-                                    <Button
-                                        className="text-md font-semibold bg-[#8559EC] hover:bg-[#7248d1]"
-                                        onClick={form.handleSubmit(onSubmit)}
-                                    >
-                                        Submit
-                                    </Button>
+                            <Button
+                                className="text-md font-semibold bg-[#8559EC] hover:bg-[#7248d1]"
+                                onClick={form.handleSubmit(onSubmit)}
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Submitting...
+                                    </>
+                                ) : (
+                                    'Submit'
+                                )}
+                            </Button>
                                 </div>
                             </div>
                         </form>

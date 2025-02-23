@@ -12,6 +12,7 @@ import { createAddress } from '@/app/actions/address';
 import { useRouter } from 'next/navigation';
 import { Listing } from '@prisma/client';
 import { fetchListingsToEdit } from '@/app/actions/fetchListingToEdit';
+import { Loader2 } from 'lucide-react';
 
 const addressSchema = z.object({
     country: z.string(),
@@ -31,6 +32,7 @@ const CreateAddress = ({ params }: {
     params: { id: string }
 }) => {
     const listingId = params.id;
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const router = useRouter();
     const {
         register,
@@ -71,11 +73,14 @@ const CreateAddress = ({ params }: {
         getListingsToEdit();
     }, [listingId, reset])
     async function onSubmit(data: FormAddress) {
+        setIsSubmitting(true);
         try {
             const newListingId = await createAddress(data, listingId) as string;
             router.push(`/becomeHost/spaceDetails/${newListingId}`)
         } catch (error) {
             console.error('Error submitting form:', error);
+        }finally{
+            setIsSubmitting(false);
         }
     }
 
@@ -202,8 +207,16 @@ const CreateAddress = ({ params }: {
                             <Button
                                 className="text-md font-semibold bg-[#8559EC] hover:bg-[#7248d1]"
                                 onClick={handleSubmit(onSubmit)}
+                                disabled={isSubmitting}
                             >
-                                Next
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Saving...
+                                    </>
+                                ) : (
+                                    'Next'
+                                )}
                             </Button>
                         </div>
                     </form>

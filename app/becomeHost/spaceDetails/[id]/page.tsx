@@ -8,9 +8,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createSpaceDetails } from "@/app/actions/spaceDetails"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { fetchListingsToEdit } from "@/app/actions/fetchListingToEdit"
 import { Listing } from "@prisma/client"
+import { Loader2 } from "lucide-react"
 
 const spaceFormSchema = z.object({
     spaceType: z.string().min(1, { message: "Space type is required" }),
@@ -33,10 +34,11 @@ const PARKING_OPTIONS = [
     "Nearby parking lot",
 ]
 
-export default function Space({params}:{
-    params: {id: string}
+export default function Space({ params }: {
+    params: { id: string }
 }) {
     const listingId = params.id;
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const router = useRouter();
     const {
         register,
@@ -81,13 +83,16 @@ export default function Space({params}:{
     const hasParking = watch("hasParking")
 
     async function onSubmit(data: SpaceFormValues) {
+        setIsSubmitting(true)
         console.log("Form submitted:", data)
         try {
-            await createSpaceDetails(data,listingId);
-        router.push(`/becomeHost/typeOfSpace/${listingId}`);
+            await createSpaceDetails(data, listingId);
+            router.push(`/becomeHost/typeOfSpace/${listingId}`);
         }
         catch (error) {
             console.error("Error submitting form:", error);
+        } finally {
+            setIsSubmitting(false)
         }
     }
 
@@ -276,7 +281,20 @@ export default function Space({params}:{
                         <Link href={`/becomeHost/address/${listingId}`}>
                             <Button variant={"outline"} className="text-md font-semibold" >Back</Button>
                         </Link>
-                        <Button className="text-md font-semibold bg-[#8559EC] hover:none" onClick={handleSubmit(onSubmit)}>Next</Button>
+                        <Button
+                            className="text-md font-semibold bg-[#8559EC] hover:bg-[#7248d1]"
+                            onClick={handleSubmit(onSubmit)}
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Saving...
+                                </>
+                            ) : (
+                                'Next'
+                            )}
+                        </Button>
                     </div>
                 </form>
             </div>

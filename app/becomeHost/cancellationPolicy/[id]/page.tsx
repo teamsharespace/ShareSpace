@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useForm, Controller } from "react-hook-form";
@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { createCancellationPolicy } from '@/app/actions/cancellationPolicy';
 import { fetchListingsToEdit } from '@/app/actions/fetchListingToEdit';
 import { Listing } from '@prisma/client';
+import { Loader2 } from 'lucide-react';
 
 interface Policy {
     name: string;
@@ -75,6 +76,7 @@ const CancellationPolicy: React.FC<CancellationPolicyProps> = ({
     params
 }) => {
     const listingId = params.id;
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const router = useRouter();
     const {
         control,
@@ -88,6 +90,7 @@ const CancellationPolicy: React.FC<CancellationPolicyProps> = ({
     });
 
     async function onSubmit(data: FormValues) {
+        setIsSubmitting(true);
         onPolicySelect?.(data.cancellationPolicy);
         //console.log(data);
         try {
@@ -95,6 +98,8 @@ const CancellationPolicy: React.FC<CancellationPolicyProps> = ({
             router.push(`/becomeHost/policies/${listingId}`);
         } catch (error) {
             console.error('Error submitting form:', error);
+        }finally{
+            setIsSubmitting(false);
         }
     };
     useEffect(() => {
@@ -188,8 +193,18 @@ const CancellationPolicy: React.FC<CancellationPolicyProps> = ({
                                 <Button variant={"outline"} className="text-md font-semibold" >Back</Button>
                             </Link>
                             <Button
-                                className="text-md font-semibold bg-[#8559EC] hover:bg-[#7248d1]" onClick={handleSubmit(onSubmit)} >
-                                Next
+                                className="text-md font-semibold bg-[#8559EC] hover:bg-[#7248d1]"
+                                onClick={handleSubmit(onSubmit)}
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Saving...
+                                    </>
+                                ) : (
+                                    'Next'
+                                )}
                             </Button>
                         </div>
                     </form>

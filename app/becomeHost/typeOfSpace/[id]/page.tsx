@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { createTypeOfSpace } from '@/app/actions/typeOfSpace';
 import { fetchListingsToEdit } from '@/app/actions/fetchListingToEdit';
 import { Listing } from '@prisma/client';
+import { Loader2 } from 'lucide-react';
 
 const listingSchema = z.object({
     spaceTitle: z.string().min(10, "Title must be at least 10 characters long"),
@@ -28,6 +29,7 @@ export default function ShareSpaceListing({ params }: {
     params: { id: string }
 }) {
     const listingId = params.id;
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const router = useRouter();
     const {
         register,
@@ -72,6 +74,7 @@ export default function ShareSpaceListing({ params }: {
     }, [listingId, reset])
 
     async function onSubmit(data: ListingFormData) {
+        setIsSubmitting(true);
         console.log('Form submitted with data:', data);
         try {
             await createTypeOfSpace(data, listingId);
@@ -79,6 +82,8 @@ export default function ShareSpaceListing({ params }: {
         }
         catch (error) {
             console.error("Error submitting form:", error);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -269,8 +274,16 @@ export default function ShareSpaceListing({ params }: {
                             <Button
                                 className="text-md font-semibold bg-[#8559EC] hover:bg-[#7248d1]"
                                 onClick={handleSubmit(onSubmit)}
+                                disabled={isSubmitting}
                             >
-                                Next
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Saving...
+                                    </>
+                                ) : (
+                                    'Next'
+                                )}
                             </Button>
                         </div>
                     </div>
