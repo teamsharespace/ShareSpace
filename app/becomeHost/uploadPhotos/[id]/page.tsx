@@ -282,7 +282,7 @@ export default function UploadPhotos({params}: {
                             Drag and drop your photos to change the order. Your first photo is what your guests will see when browsing so make sure it represents your space.
                         </span>
                         <hr className="border-t border-gray-200 mt-16 mb-10" />
-                        <div className="w-full flex justify-between mb-16">
+                        <div className="w-full flex justify-between pb-16">
                             <Link href={`/becomeHost/typeOfSpace/${listingId}`}>
                                 <Button variant="outline" className="text-md font-semibold">Back</Button>
                             </Link>

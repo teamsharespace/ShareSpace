@@ -277,7 +277,7 @@ export default function Space({ params }: {
                     </div>
 
                     <hr className="border-t border-gray-200 mt-16 mb-10" />
-                    <div className="w-full flex justify-between mb-16">
+                    <div className="w-full flex justify-between pb-16">
                         <Link href={`/becomeHost/address/${listingId}`}>
                             <Button variant={"outline"} className="text-md font-semibold" >Back</Button>
                         </Link>

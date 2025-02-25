@@ -1,46 +1,86 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect , useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Star, Users, Clock, MapPin, Share2, Calendar, ChevronDown } from 'lucide-react';
+import { Heart, Star, Users, Clock, MapPin, Share2, Calendar as CalendarIcon, ChevronDown } from 'lucide-react';
 import { format } from 'date-fns';
-import { fetchListingById } from "@/actions/dashboard/action";
+import { fetchListingById } from "@/app/actions/dashboard/action";
+import BookingSummary from '@/components/spacecomp/slug/Booking'
 
-interface SpaceDetailProps {
-  params: {
-    id: string;
-  };
-}
 
-interface SpaceData {
-  id: string;
-  name: string;
-  about: string;
-  address: string;
-  amenities: string[];
-  categories: string[];
-  city: string;
-  comments: string[];
-  country: string;
-  currency: string;
-  hostname: string;
-  images: string[];
-  lat: number;
-  lng: number;
-  people: number;
-  price: number;
-  reviews: number;
-  state: string;
-  status: string;
-  timeings: string[];
-  createdAt: Date;
-  updateAt: Date;
-}
-
-const SpaceDetail = ({ params }: SpaceDetailProps) => {
-  const [spaceData, setSpaceData] = useState<SpaceData | null>(null);
+const SpaceDetail = ({ params }) => {
+  const [spaceData, setSpaceData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const calendarRef = useRef(null); 
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+
+  // Available times in 1-hour intervals (adjust if needed)
+  const availableTimes = [
+    "8:00 AM",
+    "9:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "12:00 PM",
+    "1:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+    "5:00 PM",
+  ];
+
+  // Handle Start Time Selection
+  const handleStartTimeChange = (event) => {
+    const selectedTime = event.target.value;
+    setStartTime(selectedTime);
+
+    // Reset End Time if it is less than 1 hour ahead
+    const startIndex = availableTimes.indexOf(selectedTime);
+    setEndTime(null); // Reset end time selection
+  };
+
+  // Get valid End Times (1 hour after start)
+  const getValidEndTimes = () => {
+    if (!startTime) return [];
+
+    const startIndex = availableTimes.indexOf(startTime);
+    return availableTimes.slice(startIndex + 1); // At least 1-hour gap
+  };
+
+  // Handle clicks outside to close the calendar
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+        setShowCalendar(false);
+      }
+    };
+
+    if (showCalendar) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showCalendar]);
+
+  const handleDateSelect = (date) => {
+    setSelectedDate(date);
+    onDateChange(date);
+    setShowCalendar(false);
+  };
+
+  const onDateChange = (date) => {
+    setSelectedDate(date);
+    console.log("Selected Date:", date); // Debugging, remove if unnecessary
+  };
+  
+
   
   useEffect(() => {
     const fetchData = async () => {
@@ -61,6 +101,8 @@ const SpaceDetail = ({ params }: SpaceDetailProps) => {
       fetchData();
     }
   }, [params.id]);
+
+  
 
   if (loading) {
     return (
@@ -194,48 +236,8 @@ const SpaceDetail = ({ params }: SpaceDetailProps) => {
         </div>
 
         {/* Right Column - Booking Card */}
-        <div className="md:col-span-1">
-          <div className="sticky top-8 border rounded-xl p-6 space-y-6">
-            <div className="flex justify-between items-center">
-              <span className="text-2xl font-semibold">₹{spaceData.price}</span>
-              <span className="text-muted-foreground">/hr</span>
-            </div>
+        <BookingSummary spaceData={spaceData} />
 
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="border rounded-lg p-3">
-                  <label className="text-sm text-muted-foreground">Date</label>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    <span>Select date</span>
-                  </div>
-                </div>
-                <div className="border rounded-lg p-3">
-                  <label className="text-sm text-muted-foreground">Time</label>
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
-                    <span>Available {spaceData.timeings[0]}hrs</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border rounded-lg p-3">
-                <label className="text-sm text-muted-foreground">Attendees</label>
-                <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  <span>1-{spaceData.people} people</span>
-                  <ChevronDown className="h-4 w-4 ml-auto" />
-                </div>
-              </div>
-            </div>
-
-            <Button className="w-full">Start Booking</Button>
-
-            <p className="text-sm text-center text-muted-foreground">
-              You won't be charged yet
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   );
