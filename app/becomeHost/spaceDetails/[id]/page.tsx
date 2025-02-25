@@ -102,7 +102,7 @@ export default function Space({ params }: {
                 <Link href="/" className="flex items-center space-x-2">
                     <span className="text-4xl font-bold text-white p-3">SpaceShare</span>
                 </Link>
-                <span className="text-white text-lg mr-10  font-medium">Address</span>
+                <span className="text-white text-lg mr-10  font-medium">Space Details</span>
             </div>
         </nav>
         <main>

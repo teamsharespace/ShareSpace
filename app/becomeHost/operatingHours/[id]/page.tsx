@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createOperatingHours } from "@/app/actions/operatingHours"
+import { useState } from "react"
+import { Loader2 } from "lucide-react"
 
 const HOURS = Array.from({ length: 25 }, (_, i) => {
     const hour = i % 12 === 0 ? 12 : i % 12
@@ -38,6 +40,7 @@ export default function OperatingHours({ params }: {
 }) {
     const listingId = params.id;
     const router = useRouter();
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const defaultValues: OperatingHoursValues = {
         schedule: DAYS.reduce((acc, day) => {
             acc[day] = {
@@ -60,11 +63,14 @@ export default function OperatingHours({ params }: {
     })
 
     async function onSubmit(data: OperatingHoursValues) {
+        setIsSubmitting(true);
         try {
             await createOperatingHours(data, listingId);
             router.push(`/becomeHost/healthAndSafety/${listingId}`);
         } catch (error) {
-            console.error("Error submitting form", error);
+            console.error("Error isSubmitting form", error);
+        }finally{
+            setIsSubmitting(false);
         }
     }
 
@@ -205,7 +211,20 @@ export default function OperatingHours({ params }: {
                         <Link href={`/becomeHost/uploadPhotos/${listingId}`}>
                             <Button variant={"outline"} className="text-md font-semibold" >Back</Button>
                         </Link>
-                        <Button className="text-md font-semibold bg-[#8559EC] hover:none" onClick={handleSubmit(onSubmit)}>Next</Button>
+                        <Button
+                            className="text-md font-semibold bg-[#8559EC] hover:bg-[#7248d1]"
+                            onClick={handleSubmit(onSubmit)}
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Saving...
+                                </>
+                            ) : (
+                                'Next'
+                            )}
+                        </Button>
                     </div>
                 </form>
             </div>

@@ -97,7 +97,7 @@ export default function Policy({ params }: { params: { id: string } }) {
                     <Link href="/" className="flex items-center space-x-2">
                         <span className="text-4xl font-bold text-white p-3">SpaceShare</span>
                     </Link>
-                    <span className="text-white text-lg mr-10 font-medium">Address</span>
+                    <span className="text-white text-lg mr-10 font-medium">Policy</span>
                 </div>
             </nav>
             <main>

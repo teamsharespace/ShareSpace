@@ -42,6 +42,7 @@ export async function createOperatingHours(data: OperatingHoursValues, listingId
                         update: {
                             operatingHoursCompleted: true,
                         }
+
                     }
                 }
             }
