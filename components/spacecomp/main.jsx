@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Heart, MapPin, Star, Users, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { fetchListings } from "@/actions/dashboard/action";
+import { fetchListings } from "@/app/actions/dashboard/action";
 import dynamic from 'next/dynamic';
 
 const DynamicMap = dynamic(() => import('../../components/spacecomp/Map'), {

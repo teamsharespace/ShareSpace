@@ -23,6 +23,31 @@ model User {
     updatedAt DateTime @updatedAt
 }
 
+model Space {
+  id         String   @id @default(cuid())
+  name       String
+  about      String
+  price      Float
+  hostname   String
+  status     String
+  images     String[]
+  reviews    Float
+  categories String[]
+  amenities  String[]
+  people     Int
+  comments   String[]
+  currency   String   @default("INR")
+  createdAt  DateTime @default(now())
+  updateAt   DateTime @updatedAt
+  address    String
+  city       String
+  state      String
+  country    String
+  timeings   String[]
+  lat        Float?   // Latitude field
+  lng        Float?   // Longitude field
+}
+
 model Listing {
     id                  String              @id @default(cuid())
     userId              String
