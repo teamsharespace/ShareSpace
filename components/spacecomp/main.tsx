@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { fetchListings } from "@/app/actions/dashboard/action";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { Listing } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 
 const DynamicMap = dynamic(() => import('./Map'), {
     ssr: false
@@ -15,9 +17,9 @@ const DynamicMap = dynamic(() => import('./Map'), {
 function Main() {
     const [searchAsMove, setSearchAsMove] = useState(true);
     const [showMap, setShowMap] = useState(true);
-    const [listings, setListings] = useState([]);
+    const [listings, setListings] = useState<Listing[]>([]);
     const [index, setIndex] = useState(0);
-
+    const router = useRouter();
     // Fetch listings from backend
     useEffect(() => {
         async function loadListings() {
@@ -31,13 +33,17 @@ function Main() {
     const toggleMapVisibility = () => {
         setShowMap(!showMap);
     };
-    function handleClick(event: React.MouseEvent<HTMLElement, MouseEvent>) {
-        event.preventDefault();
+    function handlePrevPhoto(event: React.MouseEvent<HTMLElement, MouseEvent>) {
+        event.stopPropagation();
+        if(index > 0) setIndex(index - 1);
+        else setIndex(3);
     }
 
     // For form submissions
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
+    function handleNextPhoto(event: React.MouseEvent<HTMLElement, MouseEvent>) {
+        event.stopPropagation();
+        if(index < 3) setIndex(index + 1);
+        else setIndex(0);
     }
     return (
         <div className="w-full mt-40">
@@ -48,7 +54,7 @@ function Main() {
                         <div
                             key={listing.id}
                             className="group relative cursor-pointer"
-                            onClick={() => window.location.href = `/spaces/${listing.id}`}
+                            onClick={() => router.push(`/spaces/showListing/${listing.id}`)}
                         >
                             <div className="group relative">
                                 <div className="aspect-square overflow-hidden rounded-xl">

@@ -27,11 +27,7 @@ export async function uploadPhotos(formData: FormData, listingId: string) {
                 id: listingId,
             },
             data: {
-                photos: {
-                    create: uploadedUrls.map((url) => ({
-                        url: url,
-                    }))
-                },
+                photos: uploadedUrls,
                 progress: {
                     upsert: {
                         create: {

@@ -15,17 +15,12 @@ export async function fetchListingDetails(listingId: string) {
                 id: listingId,
             },
         })
-        const photos = await prisma.photo.findMany({
-            where: {
-                listingId: listingId,
-            },
-        })
         const operatingHours = await prisma.operatingHours.findMany({
             where: {
                 listingId: listingId,
             },
         });
-        return [listing, photos, operatingHours];
+        return [listing, operatingHours];
     }
     catch (error) {
         return error;

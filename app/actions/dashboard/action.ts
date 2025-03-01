@@ -28,7 +28,7 @@ export async function createSpace(data: {
       data: {
         ...data,
         currency: data.currency || "INR",
-         lat: data.lat, 
+         lat: data.lat,
         lng: data.lng
       },
     });
@@ -42,7 +42,7 @@ export async function createSpace(data: {
 
 
 export async function fetchListings() {
-  return await prisma.space.findMany();
+  return await prisma.listing.findMany();
 }
 
 export async function fetchListingById(id: string) {
