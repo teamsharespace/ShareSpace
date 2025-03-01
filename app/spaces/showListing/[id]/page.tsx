@@ -32,7 +32,7 @@ export default function ShowListing({ params }: { params: { id: string } }) {
                 "Booking cancellations submitted less than 24 hours before the Event start time are not refundable."
             ]
         },
-        STANDARD_30_DAY: {
+        THIRTY_DAY: {
             name: "Standard 30 day",
             rules: [
                 "You can cancel your Booking until 30 days before the event start time and will receive a full refund (including all Fees) of your Booking Price.",
@@ -40,7 +40,7 @@ export default function ShowListing({ params }: { params: { id: string } }) {
                 "Cancellations submitted less than 7 days before the Event start time are not refundable."
             ]
         },
-        STANDARD_90_DAY: {
+        NINETY_DAY: {
             name: "Standard 90 day",
             rules: [
                 "You can cancel your Booking until 90 days before the event start time and will receive a full refund (including all Fees) of your Booking Price.",
@@ -153,6 +153,7 @@ export default function ShowListing({ params }: { params: { id: string } }) {
                             <SquareParking strokeWidth={1.5} />
                             <h1 className="font-medium text-lg cursor-pointer">Parking</h1>
                         </div>
+                            <ChevronDown className={`text - gray - 500 transition-transform duration-300 ${showMore ? "transform rotate-180" : ""}`} />
                     </div>
                     {showMore && (
                         <>
@@ -162,7 +163,7 @@ export default function ShowListing({ params }: { params: { id: string } }) {
                             ))}
                             <h1 className="px-10 pt-10 pb-1 text-sm  font-medium">Parking Options</h1>
                             {listing?.parkingDescription?.length as number > 0 ? (
-                                <span className="text-xs px-10  pb-1 text-gray-500 font-medium">{listing?.parkingDescription}</span>
+                                <span className="text-xs px-10  pb-1 text-gray-500 font-medium w-2/3">{listing?.parkingDescription}</span>
                             ) : (
                                 <span className="text-xs px-10  pb-1 text-gray-500 font-medium">No Parking Description</span>
                             )}
@@ -174,6 +175,7 @@ export default function ShowListing({ params }: { params: { id: string } }) {
                             <NotepadText strokeWidth={1.5} />
                             <h1 className="font-medium text-lg cursor-pointer">Host rules</h1>
                         </div>
+                            <ChevronDown className={`text - gray - 500 transition-transform duration-300 ${showHostRules ? "transform rotate-180" : ""}`} />
                     </div>
                     {showHostRules && (
                         <>
@@ -208,6 +210,7 @@ export default function ShowListing({ params }: { params: { id: string } }) {
                             <ShieldCheck strokeWidth={1.5} />
                             <h1 className="font-medium text-lg cursor-pointer">Cleaning protocol</h1>
                         </div>
+                            <ChevronDown className={`text-gray-500 transition-transform duration-300 ${showCleaningProtocol ? "transform rotate-180" : ""}`} />
                     </div>
                     {showCleaningProtocol && (
                         <>
@@ -241,3 +244,5 @@ export default function ShowListing({ params }: { params: { id: string } }) {
         </div>
     )
 }
+
+
