@@ -13,7 +13,6 @@ import { cn } from "@/lib/utils";
 // Define an array of hero images relevant to Indian spaces
 const heroImages = [
   "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80", // Modern Indian office space
-  "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80", // Luxury event space
 ];
 
 const activities = [
@@ -432,76 +431,40 @@ export default function Home() {
         </main>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 md:py-16 lg:py-20 bg-black text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8">
-            <div className="sm:col-span-2 lg:col-span-4">
-              <Image
-                src="/spaceshere-logo.svg"
-                alt="SpaceShere"
-                width={120}
-                height={40}
-                className="mb-4 md:mb-6 invert"
-              />
-              <p className="text-neutral-400 mb-4 md:mb-6 text-sm md:text-base">
-                India's premier marketplace for unique and inspiring spaces.
-                Connect, book, and create memorable experiences.
+      <footer className="py-20 bg-black text-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-12 gap-8">
+            <div className="col-span-4">
+              <Image src="/poliform-logo.svg" alt="SpaceShere" width={150} height={50} className="mb-6 invert" />
+              <p className="text-neutral-400 mb-6">
+                Creating spaces of extraordinary sophistication through our curated collection of contemporary furniture
+                and design pieces.
               </p>
-              <div className="flex flex-wrap gap-4">
-                {["Facebook", "Twitter", "Instagram", "LinkedIn"].map(
-                  (social) => (
-                    <a
-                      key={social}
-                      href="#"
-                      className="text-neutral-400 hover:text-white text-sm"
-                    >
-                      {social}
-                    </a>
-                  )
-                )}
+              <div className="flex gap-4">
+                {["Facebook", "Twitter", "Instagram", "LinkedIn"].map((social) => (
+                  <a key={social} href="#" className="text-neutral-400 hover:text-white">
+                    {social}
+                  </a>
+                ))}
               </div>
             </div>
-            
-            <div className="sm:col-span-1 lg:col-span-2">
-              <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4">Company</h3>
-              <ul className="space-y-2">
-                {["About Us", "Careers", "Contact Us", "Blog", "Press"].map(
-                  (link) => (
-                    <li key={link}>
-                      <a href="#" className="text-neutral-400 hover:text-white text-sm">
+            {footerLinks.map((column, index) => (
+              <div key={index} className="col-span-2">
+                <h3 className="text-lg font-semibold mb-4">{column.title}</h3>
+                <ul className="space-y-2">
+                  {column.links.map((link, linkIndex) => (
+                    <li key={linkIndex}>
+                      <a href="#" className="text-neutral-400 hover:text-white">
                         {link}
                       </a>
                     </li>
-                  )
-                )}
-              </ul>
-            </div>
-            
-            <div className="sm:col-span-1 lg:col-span-2">
-              <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4">Discover</h3>
-              <ul className="space-y-2">
-                {[
-                  "Event Spaces",
-                  "Meeting Rooms",
-                  "Studios",
-                  "Unique Venues",
-                  "Host Resources",
-                ].map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-neutral-400 hover:text-white text-sm">
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            <div className="sm:col-span-2 lg:col-span-4">
-              <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4">
-                Subscribe to Our Newsletter
-              </h3>
-              <form className="flex flex-col sm:flex-row gap-2">
+                  ))}
+                </ul>
+              </div>
+            ))}
+            <div className="col-span-4">
+              <h3 className="text-lg font-semibold mb-4">Subscribe to Our Newsletter</h3>
+              <form className="flex gap-2">
                 <Input
                   type="email"
                   placeholder="Your email address"
@@ -510,14 +473,13 @@ export default function Home() {
                 <Button
                   type="submit"
                   variant="outline"
-                  className="whitespace-nowrap rounded-none border-white text-white hover:bg-white hover:text-black"
+                  className="rounded-none border-white text-white hover:bg-white hover:text-black"
                 >
                   Subscribe
                 </Button>
               </form>
             </div>
           </div>
-          
           <div className="mt-8 pt-8 border-t border-white/10 text-center text-sm text-neutral-400">
             <p>© 2025 SpaceShere. All rights reserved.</p>
           </div>
@@ -526,3 +488,18 @@ export default function Home() {
     </div>
   );
 }
+
+const footerLinks = [
+  {
+    title: "Company",
+    links: ["About Us", "Careers", "Contact Us", "Sustainability"],
+  },
+  {
+    title: "Products",
+    links: ["Living", "Bedroom", "Kitchen", "Outdoor"],
+  },
+  {
+    title: "Resources",
+    links: ["Blog", "FAQ", "Support", "Dealers"],
+  },
+]
