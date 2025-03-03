@@ -126,8 +126,8 @@ const activities = [
     description: "Professional settings for your film production",
   },
 ];
-const randomHeroImage =
-  heroImages[Math.floor(Math.random() * heroImages.length)];
+
+const randomHeroImage = heroImages[Math.floor(Math.random() * heroImages.length)];
 
 export default function Home() {
   const heroRef = useRef(null);
@@ -169,17 +169,28 @@ export default function Home() {
   }, [selectedActivity, autoRotate]);
 
   // Pause auto-rotation when user interacts with the categories
-  const handleActivityClick = (activity: (typeof activities)[0]) => {
+  const handleActivityClick = (activity) => {
     setSelectedActivity(activity);
     setAutoRotate(false);
 
-    // Resume auto-rotation after 30 seconds of inactivity
+    // Resume auto-rotation after 2 seconds of inactivity
     const timer = setTimeout(() => {
       setAutoRotate(true);
-    }, 30000);
+    }, 2000);
 
     return () => clearTimeout(timer);
   };
+
+  // Function to chunk activities for mobile layout
+  const chunkActivities = (activities, size) => {
+    const chunks = [];
+    for (let i = 0; i < activities.length; i += size) {
+      chunks.push(activities.slice(i, i + size));
+    }
+    return chunks;
+  };
+
+  const activityChunks = chunkActivities(activities, 4);
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
@@ -198,11 +209,11 @@ export default function Home() {
         </motion.div>
         <div className="absolute inset-0 bg-black/20 dark:bg-black/40" />
 
-        <div className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
+        <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
           {[1, 2, 3].map((_, i) => (
             <button
               key={i}
-              className={`w-3 h-3 rounded-full ${
+              className={`w-2 h-2 md:w-3 md:h-3 rounded-full ${
                 i === 0 ? "bg-white" : "border border-white/50"
               }`}
             />
@@ -213,14 +224,14 @@ export default function Home() {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative z-10 flex flex-col h-full max-w-7xl mx-auto px-4"
+          className="relative z-10 flex flex-col h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         >
-          <div className="mt-auto mb-32 max-w-2xl">
-            <h1 className="text-8xl font-light mb-6 text-white">
+          <div className="mt-auto mb-16 md:mb-32 max-w-full md:max-w-2xl">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-light mb-4 md:mb-6 text-white">
               Book Unique Spaces. Create Memories
               <span className="text-neutral-300">.</span>
             </h1>
-            <p className="text-lg text-white mb-8 max-w-xl">
+            <p className="text-base md:text-lg text-white mb-6 md:mb-8 max-w-xl">
               India's premier marketplace for unique spaces. From rooftop venues
               to creative studios, find the perfect space for your next event or
               work session.
@@ -235,201 +246,157 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section ref={heroRef} className="relative h-screen overflow-hidden">
-        <main className="min-h-screen bg-black text-white">
-          {/* Main Content */}
-          <div className="container mx-auto py-12 px-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              {/* Left Column - Text and Categories */}
-              <div className="space-y-8">
-                <div className="space-y-4">
-                  <h2 className="text-5xl font-bold">
-                    A space for every moment
-                  </h2>
-                  <p className="text-xl">
-                    Book a unique space for your{" "}
-                    {selectedActivity.name.toLowerCase()}
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap gap-3">
-                  {activities.slice(0, 4).map((activity) => (
-                    <button
-                      key={activity.id}
-                      onClick={() => handleActivityClick(activity)}
-                      className={cn(
-                        "px-4 py-2 rounded-full transition-colors",
-                        selectedActivity.id === activity.id
-                          ? "bg-white text-black"
-                          : "bg-transparent text-white hover:bg-gray-800"
-                      )}
-                    >
-                      {activity.name}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="flex flex-wrap gap-3">
-                  {activities.slice(4, 8).map((activity) => (
-                    <button
-                      key={activity.id}
-                      onClick={() => handleActivityClick(activity)}
-                      className={cn(
-                        "px-4 py-2 rounded-full transition-colors",
-                        selectedActivity.id === activity.id
-                          ? "bg-white text-black"
-                          : "bg-transparent text-white hover:bg-gray-800"
-                      )}
-                    >
-                      {activity.name}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="flex flex-wrap gap-3">
-                  {activities.slice(8, 12).map((activity) => (
-                    <button
-                      key={activity.id}
-                      onClick={() => handleActivityClick(activity)}
-                      className={cn(
-                        "px-4 py-2 rounded-full transition-colors",
-                        selectedActivity.id === activity.id
-                          ? "bg-white text-black"
-                          : "bg-transparent text-white hover:bg-gray-800"
-                      )}
-                    >
-                      {activity.name}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="flex flex-wrap gap-3">
-                  {activities.slice(12, 16).map((activity) => (
-                    <button
-                      key={activity.id}
-                      onClick={() => handleActivityClick(activity)}
-                      className={cn(
-                        "px-4 py-2 rounded-full transition-colors",
-                        selectedActivity.id === activity.id
-                          ? "bg-white text-black"
-                          : "bg-transparent text-white hover:bg-gray-800"
-                      )}
-                    >
-                      {activity.name}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="flex flex-wrap gap-3">
-                  {activities.slice(16).map((activity) => (
-                    <button
-                      key={activity.id}
-                      onClick={() => handleActivityClick(activity)}
-                      className={cn(
-                        "px-4 py-2 rounded-full transition-colors",
-                        selectedActivity.id === activity.id
-                          ? "bg-white text-black"
-                          : "bg-transparent text-white hover:bg-gray-800"
-                      )}
-                    >
-                      {activity.name}
-                    </button>
-                  ))}
-                </div>
-
-                <button className="bg-black text-white border border-white px-6 py-3 font-medium">
-                  Browse all activities
-                </button>
+      {/* Categories Section */}
+      <section className="relative min-h-screen overflow-hidden bg-black text-white py-12 md:py-0">
+        <main className="container mx-auto px-4 md:px-6 py-8 md:py-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            {/* Left Column - Text and Categories */}
+            <div className="space-y-6 md:space-y-8">
+              <div className="space-y-3 md:space-y-4">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+                  A space for every moment
+                </h2>
+                <p className="text-lg md:text-xl">
+                  Book a unique space for your{" "}
+                  {selectedActivity.name.toLowerCase()}
+                </p>
               </div>
 
-              {/* Right Column - Image */}
-              <div className="relative h-[600px] w-full overflow-hidden rounded-lg">
-                {activities.map((activity) => (
-                  <div
-                    key={activity.id}
-                    className={cn(
-                      "absolute inset-0 transition-opacity duration-1000",
-                      selectedActivity.id === activity.id
-                        ? "opacity-100"
-                        : "opacity-0 pointer-events-none"
-                    )}
-                  >
-                    <Image
-                      src={activity.image || "/placeholder.svg"}
-                      alt={`Space for ${activity.name}`}
-                      fill
-                      className="object-cover"
-                      priority={selectedActivity.id === activity.id}
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                      <h3 className="text-xl font-bold">{activity.name}</h3>
-                      <p className="text-sm text-gray-300">
-                        {activity.description}
-                      </p>
-                    </div>
+              {/* Mobile view: Horizontal scrolling categories */}
+              <div className="md:hidden overflow-x-auto pb-4">
+                <div className="flex space-x-2 min-w-max">
+                  {activities.map((activity) => (
+                    <button
+                      key={activity.id}
+                      onClick={() => handleActivityClick(activity)}
+                      className={cn(
+                        "px-3 py-1 text-sm rounded-full whitespace-nowrap transition-colors",
+                        selectedActivity.id === activity.id
+                          ? "bg-white text-black"
+                          : "bg-transparent text-white border border-white/30 hover:bg-gray-800"
+                      )}
+                    >
+                      {activity.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Desktop view: Grid of categories */}
+              <div className="hidden md:block">
+                {activityChunks.map((chunk, index) => (
+                  <div key={index} className="flex flex-wrap gap-3 mb-3">
+                    {chunk.map((activity) => (
+                      <button
+                        key={activity.id}
+                        onClick={() => handleActivityClick(activity)}
+                        className={cn(
+                          "px-4 py-2 rounded-full transition-colors",
+                          selectedActivity.id === activity.id
+                            ? "bg-white text-black"
+                            : "bg-transparent text-white hover:bg-gray-800 border border-white/30"
+                        )}
+                      >
+                        {activity.name}
+                      </button>
+                    ))}
                   </div>
                 ))}
+              </div>
 
-                {/* Auto-rotate indicator */}
-                <div className="absolute top-4 right-4 bg-black/50 rounded-full px-3 py-1 text-xs">
-                  {autoRotate ? "Auto-rotating" : "Paused"}
-                </div>
+              <button className="inline-block bg-black text-white border border-white px-4 py-2 md:px-6 md:py-3 font-medium">
+                Browse all activities
+              </button>
+            </div>
 
-                {/* Manual controls */}
-                <div className="absolute bottom-4 right-4 flex space-x-2">
-                  <button
-                    onClick={() => setAutoRotate(!autoRotate)}
-                    className="bg-white/20 hover:bg-white/40 rounded-full p-2 transition-colors"
-                  >
-                    {autoRotate ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    ) : (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    )}
-                  </button>
+            {/* Right Column - Image */}
+            <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] w-full overflow-hidden rounded-lg">
+              {activities.map((activity) => (
+                <div
+                  key={activity.id}
+                  className={cn(
+                    "absolute inset-0 transition-opacity duration-1000",
+                    selectedActivity.id === activity.id
+                      ? "opacity-100"
+                      : "opacity-0 pointer-events-none"
+                  )}
+                >
+                  <Image
+                    src={activity.image || "/placeholder.svg"}
+                    alt={`Space for ${activity.name}`}
+                    fill
+                    className="object-cover"
+                    priority={selectedActivity.id === activity.id}
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 md:p-6">
+                    <h3 className="text-lg md:text-xl font-bold">{activity.name}</h3>
+                    <p className="text-xs md:text-sm text-gray-300">
+                      {activity.description}
+                    </p>
+                  </div>
                 </div>
+              ))}
+
+              {/* Auto-rotate indicator */}
+              <div className="absolute top-4 right-4 bg-black/50 rounded-full px-2 py-1 text-xs">
+                {autoRotate ? "Auto-rotating" : "Paused"}
+              </div>
+
+              {/* Manual controls */}
+              <div className="absolute bottom-4 right-4 flex space-x-2">
+                <button
+                  onClick={() => setAutoRotate(!autoRotate)}
+                  className="bg-white/20 hover:bg-white/40 rounded-full p-2 transition-colors"
+                >
+                  {autoRotate ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 md:h-5 md:w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 md:h-5 md:w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  )}
+                </button>
               </div>
             </div>
           </div>
         </main>
       </section>
 
-      <section className="min-h-screen bg-black text-white">
-        <main className="max-w-7xl mx-auto px-6 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div className="relative aspect-[3/4] w-full">
+      {/* Host Section */}
+      <section className="bg-black text-white py-12 md:py-16 lg:py-20">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+            <div className="relative aspect-[3/4] w-full max-h-[500px] order-2 md:order-1">
               <Image
                 src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG8lMjBzaG9vdHxlbnwwfHwwfHx8MA%3D%3D"
                 alt="Peerspace host in a vibrant pink room with a dining table"
@@ -440,14 +407,14 @@ export default function Home() {
             </div>
 
             {/* Right Column - Content */}
-            <div className="space-y-6">
-              <h2 className="text-5xl font-bold leading-tight">
+            <div className="space-y-4 md:space-y-6 order-1 md:order-2">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
                 Earn income as a SpaceShere host
               </h2>
 
-              <p className="text-xl">Put your space to work.</p>
+              <p className="text-lg md:text-xl">Put your space to work.</p>
 
-              <p className="text-lg">
+              <p className="text-base md:text-lg">
                 Earn extra income by opening your doors to personal and
                 professional gatherings in your area.
               </p>
@@ -455,7 +422,7 @@ export default function Home() {
               <div>
                 <Link
                   href="/list-your-space"
-                  className="inline-block px-6 py-3 bg-white text-black font-medium rounded hover:bg-gray-100 transition-colors"
+                  className="inline-block px-4 py-2 md:px-6 md:py-3 bg-white text-black font-medium hover:bg-gray-100 transition-colors"
                 >
                   List your space
                 </Link>
@@ -466,28 +433,28 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-20 bg-black text-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-12 gap-8">
-            <div className="col-span-4">
+      <footer className="py-12 md:py-16 lg:py-20 bg-black text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8">
+            <div className="sm:col-span-2 lg:col-span-4">
               <Image
                 src="/spaceshere-logo.svg"
                 alt="SpaceShere"
-                width={150}
-                height={50}
-                className="mb-6 invert"
+                width={120}
+                height={40}
+                className="mb-4 md:mb-6 invert"
               />
-              <p className="text-neutral-400 mb-6">
+              <p className="text-neutral-400 mb-4 md:mb-6 text-sm md:text-base">
                 India's premier marketplace for unique and inspiring spaces.
                 Connect, book, and create memorable experiences.
               </p>
-              <div className="flex gap-4">
+              <div className="flex flex-wrap gap-4">
                 {["Facebook", "Twitter", "Instagram", "LinkedIn"].map(
                   (social) => (
                     <a
                       key={social}
                       href="#"
-                      className="text-neutral-400 hover:text-white"
+                      className="text-neutral-400 hover:text-white text-sm"
                     >
                       {social}
                     </a>
@@ -495,13 +462,14 @@ export default function Home() {
                 )}
               </div>
             </div>
-            <div className="col-span-2">
-              <h3 className="text-lg font-semibold mb-4">Company</h3>
+            
+            <div className="sm:col-span-1 lg:col-span-2">
+              <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4">Company</h3>
               <ul className="space-y-2">
                 {["About Us", "Careers", "Contact Us", "Blog", "Press"].map(
                   (link) => (
                     <li key={link}>
-                      <a href="#" className="text-neutral-400 hover:text-white">
+                      <a href="#" className="text-neutral-400 hover:text-white text-sm">
                         {link}
                       </a>
                     </li>
@@ -509,8 +477,9 @@ export default function Home() {
                 )}
               </ul>
             </div>
-            <div className="col-span-2">
-              <h3 className="text-lg font-semibold mb-4">Discover</h3>
+            
+            <div className="sm:col-span-1 lg:col-span-2">
+              <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4">Discover</h3>
               <ul className="space-y-2">
                 {[
                   "Event Spaces",
@@ -520,18 +489,19 @@ export default function Home() {
                   "Host Resources",
                 ].map((link) => (
                   <li key={link}>
-                    <a href="#" className="text-neutral-400 hover:text-white">
+                    <a href="#" className="text-neutral-400 hover:text-white text-sm">
                       {link}
                     </a>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="col-span-4">
-              <h3 className="text-lg font-semibold mb-4">
+            
+            <div className="sm:col-span-2 lg:col-span-4">
+              <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4">
                 Subscribe to Our Newsletter
               </h3>
-              <form className="flex gap-2">
+              <form className="flex flex-col sm:flex-row gap-2">
                 <Input
                   type="email"
                   placeholder="Your email address"
@@ -540,12 +510,16 @@ export default function Home() {
                 <Button
                   type="submit"
                   variant="outline"
-                  className="rounded-none border-white text-white hover:bg-white hover:text-black"
+                  className="whitespace-nowrap rounded-none border-white text-white hover:bg-white hover:text-black"
                 >
                   Subscribe
                 </Button>
               </form>
             </div>
+          </div>
+          
+          <div className="mt-8 pt-8 border-t border-white/10 text-center text-sm text-neutral-400">
+            <p>© 2025 SpaceShere. All rights reserved.</p>
           </div>
         </div>
       </footer>
