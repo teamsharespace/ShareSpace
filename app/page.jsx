@@ -162,7 +162,7 @@ export default function Home() {
       );
       const nextIndex = (currentIndex + 1) % activities.length;
       setSelectedActivity(activities[nextIndex]);
-    }, 5000);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [selectedActivity, autoRotate]);
@@ -420,7 +420,7 @@ export default function Home() {
 
               <div>
                 <Link
-                  href="/list-your-space"
+                  href="/becomeHost"
                   className="inline-block px-4 py-2 md:px-6 md:py-3 bg-white text-black font-medium hover:bg-gray-100 transition-colors"
                 >
                   List your space
