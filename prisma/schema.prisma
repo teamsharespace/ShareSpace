@@ -1,86 +1,89 @@
 generator client {
-  provider = "prisma-client-js"
-}
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "prisma-client-js"
 }
 
-model User {
-  id            String          @id @default(cuid())
-  name          String?
-  email         String          @unique
-  emailVerified DateTime?
-  image         String?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  accounts      Account[]
-  Authenticator Authenticator[]
-  listings      Listing[]
-  sessions      Session[]
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
+
 
 model Listing {
-  id                  String              @id @default(cuid())
-  userId              String
-  address             String?
-  landmark            String?
-  city                String?
-  state               String?             @db.VarChar(18)
-  pincode             Int?
-  typeOfSpace         String?
-  overNightStays      Boolean?
-  hasParking          Boolean?            @default(false)
-  parkingOptions      ParkingOptions[]
-  parkingDescription  String?
-  securityCameras     Boolean?
-  name                String?
-  description         String?
-  age                 String?
-  size                Int?
-  rules               String?
-  wifiName            String?
-  wifiPassword        String?
-  arrivalInstructions String?
-  agreesToPolicies    Boolean?
-  cancellationPolicy  CancellationPolicy?
-  cleaningMeasures    CleaningMeasure[]
-  protectiveGear      ProtectiveGear[]
-  distanceMeasures    DistanceMeasure[]
-  covidSignage        CovidSignage[]
-  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  progress            ListingProgress?
-  operatingHours      OperatingHours[]
-  photos              String[]
+    id                  String              @id @default(cuid())
+    userId              String
+    address             String?
+    landmark            String?
+    city                String?
+    state               String?             @db.VarChar(18)
+    pincode             Int?
+    typeOfSpace         String?
+    overNightStays      Boolean?
+    hasParking          Boolean?            @default(false)
+    parkingOptions      ParkingOptions[]
+    parkingDescription  String?
+    securityCameras     Boolean?
+    name                String?
+    description         String?
+    age                 String?
+    size                Int?
+    rules               String?
+    wifiName            String?
+    wifiPassword        String?
+    arrivalInstructions String?
+    agreesToPolicies    Boolean?
+    cancellationPolicy  CancellationPolicy?
+    cleaningMeasures    CleaningMeasure[]
+    protectiveGear      ProtectiveGear[]
+    distanceMeasures    DistanceMeasure[]
+    covidSignage        CovidSignage[]
+    user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+    progress            ListingProgress?
+    operatingHours      OperatingHours[]
+    photos              String[]
 }
 
 model ListingProgress {
-  id                          String   @id @default(cuid())
-  listingId                   String   @unique
-  addressCompleted            Boolean? @default(false)
-  spaceDetailsCompleted       Boolean? @default(false)
-  photosCompleted             Boolean? @default(false)
-  policiesCompleted           Boolean? @default(false)
-  healthSafetyCompleted       Boolean? @default(false)
-  operatingHoursCompleted     Boolean? @default(false)
-  cancellationPolicyCompleted Boolean? @default(false)
-  typeOfSpaceCompleted        Boolean? @default(false)
-  updatedAt                   DateTime @updatedAt
-  listing                     Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    id                          String   @id @default(cuid())
+    listingId                   String   @unique
+    addressCompleted            Boolean? @default(false)
+    spaceDetailsCompleted       Boolean? @default(false)
+    photosCompleted             Boolean? @default(false)
+    policiesCompleted           Boolean? @default(false)
+    healthSafetyCompleted       Boolean? @default(false)
+    operatingHoursCompleted     Boolean? @default(false)
+    cancellationPolicyCompleted Boolean? @default(false)
+    typeOfSpaceCompleted        Boolean? @default(false)
+    updatedAt                   DateTime @updatedAt
+    listing                     Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
 }
 
 model OperatingHours {
-  id        String    @id @default(cuid())
-  listingId String
-  dayOfWeek DayOfWeek
-  isOpen    Boolean?  @default(true)
-  openTime  String?
-  closeTime String?
-  listing   Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    id        String    @id @default(cuid())
+    listingId String
+    dayOfWeek DayOfWeek
+    isOpen    Boolean?  @default(true)
+    openTime  String?
+    closeTime String?
+    listing   Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
 
-  @@unique([listingId, dayOfWeek])
+    @@unique([listingId, dayOfWeek])
 }
-model Account { userId            String
+
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  Authenticator Authenticator[]
+  listings      Listing[]
+}
+
+model Account {
+  userId            String
   type              String
   provider          String
   providerAccountId String
@@ -91,9 +94,8 @@ model Account { userId            String
   scope             String?
   id_token          String?
   session_state     String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
 }
@@ -102,85 +104,83 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
   identifier String
-  token      String
+  token      String   @unique
   expires    DateTime
 
   @@id([identifier, token])
 }
 
 model Authenticator {
-  credentialID         String  @unique
-  userId               String
-  providerAccountId    String
-  credentialPublicKey  String
-  counter              Int
-  credentialDeviceType String
-  credentialBackedUp   Boolean
-  transports           String?
-  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    credentialID         String  @unique
+    userId               String
+    providerAccountId    String
+    credentialPublicKey  String
+    counter              Int
+    credentialDeviceType String
+    credentialBackedUp   Boolean
+    transports           String?
+    user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id([userId, credentialID])
+    @@id([userId, credentialID])
 }
 
 enum ParkingOptions {
-  ONSITE
-  STREET
-  VALET
-  METERED_STREET
-  LOT
-  PAID_ONSITE
+    ONSITE
+    STREET
+    VALET
+    METERED_STREET
+    LOT
+    PAID_ONSITE
 }
 
 enum DayOfWeek {
-  MONDAY
-  TUESDAY
-  WEDNESDAY
-  THURSDAY
-  FRIDAY
-  SATURDAY
-  SUNDAY
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+    SATURDAY
+    SUNDAY
 }
 
 enum CancellationPolicy {
-  VERY_FLEXIBLE
-  FLEXIBLE
-  THIRTY_DAY
-  NINETY_DAY
+    VERY_FLEXIBLE
+    FLEXIBLE
+    THIRTY_DAY
+    NINETY_DAY
 }
 
 enum CleaningMeasure {
-  GUIDELINES_COMPLIANCE
-  HIGH_TOUCH_DISINFECTION
-  POROUS_MATERIALS_CLEANED
-  PROFESSIONAL_CLEANER
-  SPACED_BOOKINGS
+    GUIDELINES_COMPLIANCE
+    HIGH_TOUCH_DISINFECTION
+    POROUS_MATERIALS_CLEANED
+    PROFESSIONAL_CLEANER
+    SPACED_BOOKINGS
 }
 
 enum ProtectiveGear {
-  DISINFECTING_WIPES
-  DISPOSABLE_GLOVES
-  DISPOSABLE_MASKS
-  HAND_SANITIZER
+    DISINFECTING_WIPES
+    DISPOSABLE_GLOVES
+    DISPOSABLE_MASKS
+    HAND_SANITIZER
 }
 
 enum DistanceMeasure {
-  LIMITED_CAPACITY
-  OUTDOOR_VENTILATION
-  HEPA_AIR_FILTERS
-  OUTDOOR_SPACE
-  RECONFIGURED_SPACE
+    LIMITED_CAPACITY
+    OUTDOOR_VENTILATION
+    HEPA_AIR_FILTERS
+    OUTDOOR_SPACE
+    RECONFIGURED_SPACE
 }
 
 enum CovidSignage {
-  CLEANING_CHECKLIST
-  COVID_GUIDELINES
-  DISTANCE_MARKERS
-  DIRECTIONAL_ARROWS
+    CLEANING_CHECKLIST
+    COVID_GUIDELINES
+    DISTANCE_MARKERS
+    DIRECTIONAL_ARROWS
 }

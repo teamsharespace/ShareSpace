@@ -24,7 +24,7 @@ export default function Activites() {
                         <li>More</li>
                     </ul>
                     <Button
-                        className="w-full border-gray-300 " variant={"outline"}
+                        className="w-full border-gray-300 " variant={"minimal"}
                     >
                         Enable
                     </Button>

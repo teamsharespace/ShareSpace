@@ -4,7 +4,7 @@ import { useState, useEffect , useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Heart, Star, Users, Clock, MapPin, Share2, Calendar as CalendarIcon, ChevronDown } from 'lucide-react';
 import { format } from 'date-fns';
-import { fetchListingById } from "@/app/actions/dashboard/action";
+import {fetchListings as fetchListingById } from "@/app/actions/dashboard/action";
 import BookingSummary from '@/components/spacecomp/slug/Booking'
 
 
@@ -14,7 +14,7 @@ const SpaceDetail = ({ params }) => {
   const [error, setError] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
-  const calendarRef = useRef(null); 
+  const calendarRef = useRef(null);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
 
@@ -79,9 +79,9 @@ const SpaceDetail = ({ params }) => {
     setSelectedDate(date);
     console.log("Selected Date:", date); // Debugging, remove if unnecessary
   };
-  
 
-  
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -102,7 +102,7 @@ const SpaceDetail = ({ params }) => {
     }
   }, [params.id]);
 
-  
+
 
   if (loading) {
     return (
