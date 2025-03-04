@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Calendar as CalendarIcon, Clock, Users } from "lucide-react";
-import Bookingcal from "./Bookingcal"; 
+import Bookingcal from "./Bookingcal";
 import { Button } from "@/components/ui/button";
 
 const BookingSummary = ({ spaceData }) => {
@@ -32,7 +32,7 @@ const BookingSummary = ({ spaceData }) => {
 
   const calculateTotal = () => {
     if (!startTime || !endTime) return null;
-    
+
     const start = parseInt(startTime);
     const end = parseInt(endTime);
     const hours = end - start;
@@ -45,10 +45,10 @@ const BookingSummary = ({ spaceData }) => {
     processingFee += Math.ceil(subtotal * 0.05);
   }
     const total = Math.ceil(subtotal + processingFee);
-  
+
     return { subtotal, processingFee, total, hours };
   };
-  
+
 
   const totalData = calculateTotal();
 
@@ -68,7 +68,6 @@ const BookingSummary = ({ spaceData }) => {
   ) : (
     <div className="flex justify-between items-center">
       <span className="flex items-center gap-1 text-2xl font-semibold">
-        ⚡ ₹{spaceData.price}
       </span>
       <span className="text-muted-foreground">/hr</span>
     </div>
@@ -169,7 +168,7 @@ const BookingSummary = ({ spaceData }) => {
           <option value="1-25">1 - 25 people</option>
           <option value="custom">Custom</option>
         </select>
-       
+
       </div>
 
       {selectedOption === "custom" && (

@@ -1,7 +1,7 @@
 'use client'
 import { ThemeProvider } from "./themeProvider"
 import { SessionProvider } from "./sessionProvider"
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/sonner"
 import { AuthProvider } from "@/contexts/AuthContext"
 
 export function RootProvider({ children }: { children: React.ReactNode }) {

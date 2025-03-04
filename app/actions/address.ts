@@ -3,8 +3,7 @@ import { getServerSession } from "next-auth"
 import { NEXT_AUTH } from "../lib/auth"
 import { UserSession } from "./fetchUser";
 import prisma from "@/lib/prisma";
-import { FormAddress } from "@/components/listingForm/createAddress";
-
+import { FormAddress } from "../becomeHost/address/[id]/page";
 
 export async function createAddress(data: FormAddress, listingId: string) {
     const session = await getServerSession(NEXT_AUTH) as UserSession;
