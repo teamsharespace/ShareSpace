@@ -9,6 +9,7 @@ import Navbar from "@/components/navbar";
 import { useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
+import RunningProjectsSection from "@/components/RunningProjectsSection";
 
 // Define an array of hero images relevant to Indian spaces
 const heroImages = [
@@ -126,11 +127,27 @@ const activities = [
   },
 ];
 
+const footerLinks = [
+  {
+    title: "Company",
+    links: ["About Us", "Careers", "Contact Us", "Sustainability"],
+  },
+  {
+    title: "Products",
+    links: ["Living", "Bedroom", "Kitchen", "Outdoor"],
+  },
+  {
+    title: "Resources",
+    links: ["Blog", "FAQ", "Support", "Dealers"],
+  },
+];
+
 const randomHeroImage = heroImages[Math.floor(Math.random() * heroImages.length)];
 
 export default function Home() {
   const heroRef = useRef(null);
   const featuredRef = useRef(null);
+  const hostRef = useRef(null);
   const [headerSize] = useState(1.2);
   const [textSize] = useState(0.8);
   const [selectedActivity, setSelectedActivity] = useState(activities[0]);
@@ -146,8 +163,14 @@ export default function Home() {
     offset: ["start end", "end start"],
   });
 
+  const { scrollYProgress: hostProgress } = useScroll({
+    target: hostRef,
+    offset: ["start end", "end start"],
+  });
+
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const featuredY = useTransform(featuredProgress, [0, 1], [100, -100]);
+  const hostY = useTransform(hostProgress, [0, 1], [100, -100]);
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth";
@@ -162,7 +185,7 @@ export default function Home() {
       );
       const nextIndex = (currentIndex + 1) % activities.length;
       setSelectedActivity(activities[nextIndex]);
-    }, 1000);
+    }, 3000); // Slowed down rotation for better user experience
 
     return () => clearInterval(interval);
   }, [selectedActivity, autoRotate]);
@@ -172,10 +195,10 @@ export default function Home() {
     setSelectedActivity(activity);
     setAutoRotate(false);
 
-    // Resume auto-rotation after 2 seconds of inactivity
+    // Resume auto-rotation after 5 seconds of inactivity
     const timer = setTimeout(() => {
       setAutoRotate(true);
-    }, 2000);
+    }, 5000);
 
     return () => clearTimeout(timer);
   };
@@ -194,7 +217,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
       <Navbar />
-
       {/* Hero Section */}
       <section ref={heroRef} className="relative h-screen overflow-hidden">
         <motion.div style={{ y }} className="absolute inset-0">
@@ -244,9 +266,9 @@ export default function Home() {
           </div>
         </motion.div>
       </section>
-
+      <RunningProjectsSection />
       {/* Categories Section */}
-      <section className="relative min-h-screen overflow-hidden bg-black text-white py-12 md:py-0">
+      <section ref={featuredRef} className="relative min-h-screen overflow-hidden bg-black text-white py-12 md:py-24">
         <main className="container mx-auto px-4 md:px-6 py-8 md:py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             {/* Left Column - Text and Categories */}
@@ -391,70 +413,89 @@ export default function Home() {
         </main>
       </section>
 
-      {/* Host Section */}
-      <section className="bg-black text-white py-12 md:py-16 lg:py-20">
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-            <div className="relative aspect-[3/4] w-full max-h-[500px] order-2 md:order-1">
-              <Image
-                src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG8lMjBzaG9vdHxlbnwwfHwwfHx8MA%3D%3D"
-                alt="Peerspace host in a vibrant pink room with a dining table"
-                fill
-                className="object-cover rounded-lg"
-                priority
-              />
-            </div>
+     {/* Host Section */}
+<section ref={hostRef} className="relative min-h-screen bg-black text-white py-16 md:py-24">
+  <main className="container mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
+      {/* Left Column - Image */}
+      <div className="relative aspect-video md:aspect-square w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] order-2 md:order-1">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          style={{ y: hostY }}
+          className="h-full w-full relative rounded-lg overflow-hidden"
+        >
+          <Image
+            src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+            alt="Peerspace host in a vibrant pink room with a dining table"
+            fill
+            className="object-cover rounded-lg"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        </motion.div>
+      </div>
 
-            {/* Right Column - Content */}
-            <div className="space-y-4 md:space-y-6 order-1 md:order-2">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-                Earn income as a SpaceShere host
-              </h2>
-
-              <p className="text-lg md:text-xl">Put your space to work.</p>
-
-              <p className="text-base md:text-lg">
-                Earn extra income by opening your doors to personal and
-                professional gatherings in your area.
-              </p>
-
-              <div>
-                <Link
-                  href="/becomeHost"
-                  className="inline-block px-4 py-2 md:px-6 md:py-3 bg-white text-black font-medium hover:bg-gray-100 transition-colors"
-                >
-                  List your space
-                </Link>
-              </div>
-            </div>
+      {/* Right Column - Content */}
+      <div className="space-y-6 md:space-y-10 order-1 md:order-2">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4">
+            Earn income as a SpaceShere host
+          </h2>
+          <p className="text-xl md:text-2xl mb-4">Put your space to work.</p>
+          <p className="text-base md:text-xl mb-8 max-w-lg">
+            Earn extra income by opening your doors to personal and professional gatherings in your area. Our hosts earn an average of ₹45,000 per month sharing their spaces.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Link
+              href="/becomeHost"
+              className="inline-block px-6 py-3 md:px-8 md:py-4 bg-white text-black font-medium hover:bg-gray-100 transition-colors text-center text-lg"
+            >
+              List your space
+            </Link>
+            <Button
+              variant="outline"
+              className="px-6 py-3 md:px-8 md:py-4 border-white text-white hover:bg-white/10 text-lg transition-colors"
+            >
+              Learn more
+            </Button>
           </div>
-        </main>
-      </section>
+        </motion.div>
+      </div>
+    </div>
+  </main>
+</section>
 
-      <footer className="py-20 bg-black text-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-12 gap-8">
-            <div className="col-span-4">
-              <Image src="/poliform-logo.svg" alt="SpaceShere" width={150} height={50} className="mb-6 invert" />
-              <p className="text-neutral-400 mb-6">
-                Creating spaces of extraordinary sophistication through our curated collection of contemporary furniture
-                and design pieces.
+      {/* Footer Section */}
+      <footer className="bg-black text-white py-16 md:py-24">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
+            <div className="md:col-span-4 space-y-6">
+              <Image src="/poliform-logo.svg" alt="SpaceShere" width={180} height={60} className="mb-6 invert" />
+              <p className="text-neutral-400 text-lg mb-8 max-w-md">
+                Creating spaces of extraordinary sophistication through our curated collection of contemporary furniture and design pieces for every occasion.
               </p>
-              <div className="flex gap-4">
+              <div className="flex flex-wrap gap-6">
                 {["Facebook", "Twitter", "Instagram", "LinkedIn"].map((social) => (
-                  <a key={social} href="#" className="text-neutral-400 hover:text-white">
+                  <a key={social} href="#" className="text-neutral-400 hover:text-white text-lg transition-colors">
                     {social}
                   </a>
                 ))}
               </div>
             </div>
+            <div className="hidden md:block md:col-span-1"></div>
             {footerLinks.map((column, index) => (
-              <div key={index} className="col-span-2">
-                <h3 className="text-lg font-semibold mb-4">{column.title}</h3>
-                <ul className="space-y-2">
+              <div key={index} className="md:col-span-2">
+                <h3 className="text-xl font-semibold mb-6">{column.title}</h3>
+                <ul className="space-y-4">
                   {column.links.map((link, linkIndex) => (
                     <li key={linkIndex}>
-                      <a href="#" className="text-neutral-400 hover:text-white">
+                      <a href="#" className="text-neutral-400 hover:text-white text-lg transition-colors">
                         {link}
                       </a>
                     </li>
@@ -462,44 +503,39 @@ export default function Home() {
                 </ul>
               </div>
             ))}
-            <div className="col-span-4">
-              <h3 className="text-lg font-semibold mb-4">Subscribe to Our Newsletter</h3>
-              <form className="flex gap-2">
+            <div className="md:col-span-3">
+              <h3 className="text-xl font-semibold mb-6">Subscribe to Our Newsletter</h3>
+              <form className="space-y-4">
                 <Input
                   type="email"
                   placeholder="Your email address"
-                  className="bg-white/10 border-white/20 text-white placeholder-white/50"
+                  className="bg-white/10 border-white/20 text-white placeholder-white/50 h-12 text-lg rounded-none"
                 />
                 <Button
                   type="submit"
                   variant="outline"
-                  className="rounded-none border-white text-white hover:bg-white hover:text-black"
+                  className="w-full md:w-auto rounded-none border-white text-white hover:bg-white hover:text-black h-12 text-lg transition-colors"
                 >
                   Subscribe
                 </Button>
               </form>
+              <p className="mt-4 text-neutral-400">
+                Get exclusive updates on new spaces and special offers
+              </p>
             </div>
           </div>
-          <div className="mt-8 pt-8 border-t border-white/10 text-center text-sm text-neutral-400">
-            <p>© 2025 SpaceShere. All rights reserved.</p>
+          <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-neutral-400 text-center md:text-left">
+              © 2025 SpaceShere. All rights reserved.
+            </p>
+            <div className="flex gap-6">
+              <a href="#" className="text-neutral-400 hover:text-white transition-colors">Privacy Policy</a>
+              <a href="#" className="text-neutral-400 hover:text-white transition-colors">Terms of Service</a>
+              <a href="#" className="text-neutral-400 hover:text-white transition-colors">Sitemap</a>
+            </div>
           </div>
         </div>
       </footer>
     </div>
   );
 }
-
-const footerLinks = [
-  {
-    title: "Company",
-    links: ["About Us", "Careers", "Contact Us", "Sustainability"],
-  },
-  {
-    title: "Products",
-    links: ["Living", "Bedroom", "Kitchen", "Outdoor"],
-  },
-  {
-    title: "Resources",
-    links: ["Blog", "FAQ", "Support", "Dealers"],
-  },
-]
