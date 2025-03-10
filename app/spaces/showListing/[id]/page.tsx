@@ -11,7 +11,9 @@ import { useEffect, useState } from "react";
 export default function ShowListing({ params }: { params: { id: string } }) {
     const listingId = params.id;
     const router = useRouter();
-    const { data: session } = useSession(); const [listing, setListing] = useState<Listing | null>(null); const [operatingHours, setOperatingHours] = useState<OperatingHours[]>([]);
+    const { data: session } = useSession();
+    const [listing, setListing] = useState<Listing | null>(null);
+    const [operatingHours, setOperatingHours] = useState<OperatingHours[]>([]);
     const [readMore, setReadMore] = useState(false);
     const [showMore, setShowMore] = useState(false);
     const [showCleaningProtocol, setShowCleaningProtocol] = useState(false);
