@@ -1,5 +1,5 @@
 "use client";
-import { fetchListingDetails } from "@/app/actions/fetchListingDetails";
+import { fetchListingForSpaces } from "@/app/actions/fetchListingForSpaces";
 import BookingSummary from "@/components/spacecomp/slug/Booking";
 import { CancellationPolicy, CleaningMeasure, CovidSignage, DistanceMeasure, Listing, OperatingHours, ParkingOptions, ProtectiveGear } from "@prisma/client";
 import { ChevronDown, ChevronUp, LandPlot, LayoutGrid, NotepadText, ShieldCheck, SquareParking } from "lucide-react";
@@ -93,7 +93,7 @@ export default function ShowListing({ params }: { params: { id: string } }) {
     useEffect(() => {
         async function getListing() {
             try {
-                const result = await fetchListingDetails(listingId) as [Listing, OperatingHours[]];
+                const result = await fetchListingForSpaces(listingId) as [Listing, OperatingHours[]];
                 setListing(result[0]);
                 setOperatingHours(result[1]);
                 console.log(result[1]);

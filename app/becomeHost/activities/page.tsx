@@ -45,6 +45,30 @@ export default function Activites() {
                                 />
                             </div>
                         </div>
+                        <span className="font-semibold text-sm ">Minimum number of hours</span>
+                        <span className="text-sm text-gray-500">Must be between 1-12 hours</span>
+                        <div className="flex flex-row ">
+                            <div className="rounded-none text-sm p-4 border-r-0 text-gray-600 border h-10 flex items-center">Rs.</div>
+                            <div className="rounded-none text-md  border w-1/2 h-10">
+                                <input
+                                    className='w-full h-full p-4 placeholder:text-sm'
+                                    placeholder='1000'
+                                    type='number'
+                                />
+                            </div>
+                        </div>
+                        <span className="font-semibold text-sm ">8+ hour discount</span>
+                        <span className="text-sm text-gray-500">Encourage guests to book longer by giving a discount for bookings that are 8 hours or more.</span>
+                        <div className="flex flex-row ">
+                            <div className="rounded-none text-sm p-4 border-r-0 text-gray-600 border h-10 flex items-center">Rs.</div>
+                            <div className="rounded-none text-md  border w-1/2 h-10">
+                                <input
+                                    className='w-full h-full p-4 placeholder:text-sm'
+                                    placeholder='1000'
+                                    type='number'
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
