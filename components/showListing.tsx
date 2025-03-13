@@ -1,13 +1,13 @@
 "use client";
 import BookingSummary from "@/components/spacecomp/slug/Booking";
 import { CancellationPolicy, CleaningMeasure, CovidSignage, DistanceMeasure, Listing, OperatingHours, ParkingOptions, ProtectiveGear } from "@prisma/client";
-import { ChevronDown, ChevronUp, LandPlot, LayoutGrid, NotepadText, ShieldCheck, SquareParking } from "lucide-react";
+import { ChevronDown, ChevronUp, LandPlot, LayoutGrid, NotepadText, ShieldCheck, SquareParking ,Share, Heart} from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { QRCodeCanvas } from "qrcode.react";
+import SharePop from "@/components/spacecomp/Share";
 
 export default function ShowListing({ 
     params, 
@@ -22,6 +22,12 @@ export default function ShowListing({
     const { data: session } = useSession();
     const pathname = usePathname();
     const [fullUrl, setFullUrl] = useState("");
+    const [PopUP,setPopup] = useState(false);
+    const [saved, setSaved] = useState(false);
+
+    const saveClicked = () => {
+      setSaved((prev) => !prev);
+    };
   useEffect(() => {
     const baseUrl =`${window.location.protocol}//${window.location.host}`;
     const url = `${baseUrl}${pathname}`;
@@ -120,6 +126,10 @@ export default function ShowListing({
     //     }
     //     getListing();
     // }, [listingId])
+
+    function renderPopup(){
+        setPopup(true);
+    }
     return (
         <div>
             <nav className={"w-full z-50 transition-all duration-300 fixed top-0 bg-black/90"}>
@@ -134,8 +144,30 @@ export default function ShowListing({
                 <div className="w-[58%] pt-28 flex-row justify-between flex mx-auto ">
                     <div className="flex flex-row justify-between">
                     <div className=" flex-col flex mx-auto">
+                    <div className="flex-row flex justify-between">
+                        <div className="flex-col flex ">
                         <div className="font-semibold text-2xl pb-2">{listing?.name}</div>
                         <div className="text-gray-600  text-sm pb-6">{listing?.address}, {listing?.city}, {listing?.state}</div>
+                        </div>
+                        <div className="flex-row flex gap-4  my-auto">
+                        <div 
+  className="flex items-center gap-2 px-4 py-2 text-gray-800 font-semibold rounded-md cursor-pointer transition-all duration-200"
+  onClick={renderPopup}
+>
+  <Share />
+  <span className="text-lg">Share</span>
+</div>
+
+<div
+      className="flex items-center gap-2 px-4 py-2 text-gray-800 font-semibold rounded-md cursor-pointer transition-all duration-200"
+      onClick={saveClicked}
+    >
+      <Heart className={`w-6 h-6 transition-colors duration-300 ${saved ? "text-purple-600 fill-purple-600" : "text-gray-500"}`} />
+      <span className="text-lg">{saved ? "Saved" : "Save"}</span>
+    </div>
+
+                        </div>
+                    </div>
                         <div className="flex flex-row gap-2 pb-8">
                             <img src={listing?.photos[0]} alt={"image"} className="w-1/2 h-[550px] rounded-sm object-cover" />
                             <div className="grid grid-cols-2 gap-2 w-1/2 h-[550px]  ">
@@ -262,11 +294,11 @@ export default function ShowListing({
                     </div>
                 </div>
                 </div>
-                <div className="flex flex-col items-center justify-center mt-10 mb-20">
-                <h2 className="text-lg font-semibold mb-2">Scan to View this Listing</h2>
-                <QRCodeCanvas value={fullUrl} size={150} />
-            </div>
             </main>
+
+           {PopUP && (
+                              <SharePop onClose={() => setPopup(false)} URL={fullUrl}/>
+                          )}
         </div>
     )
 }
