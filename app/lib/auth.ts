@@ -7,8 +7,8 @@ export const NEXT_AUTH: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
         GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID || " ",
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET || " ",
+            clientId: process.env.GOOGLE_CLIENT_ID_PRODUCTION || " ",
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET_PRODUCTION || " ",
             httpOptions: {
                 timeout: 40000,
                 agent: undefined
