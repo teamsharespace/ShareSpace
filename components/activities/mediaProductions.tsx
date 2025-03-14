@@ -1,10 +1,11 @@
 "use client"
-import { ActivitiesSchema, amenities, Amenities, Booking, CleaningRate } from "@/app/hooks/useActivitiesForm";
+import { ActivitiesSchema} from "@/app/hooks/useActivitiesForm";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Amenities, Booking, CleaningRate } from "@prisma/client";
 import { CircleCheck, Hourglass, User } from "lucide-react";
 import { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -231,11 +232,11 @@ export default function MediaProductions() {
                         )
                     }
                     {
-                        amenities.map((amenity, index) => (
+                        Object.keys(Amenities).map((amenity, index) => (
                             <div className="flex items-center space-x-2 pb-2" key={index}>
                                 <Checkbox id={`terms-${index}`} className="border-gray-800"
-                                    checked={selectAmenities?.includes(amenity)}
-                                    onCheckedChange={() => toggleAmenity(amenity)}
+                                    checked={selectAmenities?.includes(amenity as keyof typeof Amenities)}
+                                    onCheckedChange={() => toggleAmenity(amenity as keyof typeof Amenities)}
                                 />
                                 <label
                                     htmlFor={`terms-${index}`}

@@ -7,7 +7,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-
 model Listing {
     id                  String              @id @default(cuid())
     userId              String
@@ -40,6 +39,63 @@ model Listing {
     progress            ListingProgress?
     operatingHours      OperatingHours[]
     photos              String[]
+    meetings            Meeting?
+    events              Event?
+    mediaProductions    MediaProduction?
+}
+
+model Meeting {
+    id              String        @id @default(cuid())
+    listingId       String
+    enabled         Boolean
+    hourlyRate      Int?
+    minimumHours    Int?
+    discount        Int?
+    cleaningRate    CleaningRate?
+    additionalFee   Int?
+    instantBooking  Booking?
+    amenities       Amenities[]
+    capacity        Int?
+    customAmenities String[]
+
+    listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    @@unique([listingId])
+}
+
+model Event {
+    id              String        @id @default(cuid())
+    listingId       String
+    enabled         Boolean
+    hourlyRate      Int?
+    minimumHours    Int?
+    discount        Int?
+    cleaningRate    CleaningRate?
+    additionalFee   Int?
+    instantBooking  Booking?
+    amenities       Amenities[]
+    capacity        Int?
+    customAmenities String[]
+
+    listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    @@unique([listingId])
+}
+
+model MediaProduction {
+    id              String        @id @default(cuid())
+    listingId       String
+    enabled         Boolean
+    hourlyRate      Int?
+    minimumHours    Int?
+    discount        Int?
+    cleaningRate    CleaningRate?
+    additionalFee   Int?
+    instantBooking  Booking?
+    amenities       Amenities[]
+    capacity        Int?
+    customAmenities String[]
+
+    listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    @@unique([listingId])
 }
 
 model ListingProgress {
@@ -53,6 +109,7 @@ model ListingProgress {
     operatingHoursCompleted     Boolean? @default(false)
     cancellationPolicyCompleted Boolean? @default(false)
     typeOfSpaceCompleted        Boolean? @default(false)
+    activityCompleted           Boolean? @default(false)
     updatedAt                   DateTime @updatedAt
     listing                     Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
 }
@@ -69,50 +126,49 @@ model OperatingHours {
     @@unique([listingId, dayOfWeek])
 }
 
-
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  Authenticator Authenticator[]
-  listings      Listing[]
+    id            String          @id @default(cuid())
+    name          String?
+    email         String          @unique
+    emailVerified DateTime?
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+    Authenticator Authenticator[]
+    listings      Listing[]
 }
 
 model Account {
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
+    userId            String
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String?
+    access_token      String?
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String?
+    session_state     String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id([provider, providerAccountId])
+    @@id([provider, providerAccountId])
 }
 
 model Session {
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+    identifier String
+    token      String   @unique
+    expires    DateTime
 
-  @@id([identifier, token])
+    @@id([identifier, token])
 }
 
 model Authenticator {
@@ -183,4 +239,38 @@ enum CovidSignage {
     COVID_GUIDELINES
     DISTANCE_MARKERS
     DIRECTIONAL_ARROWS
+}
+
+enum CleaningRate {
+    INCLUDED
+    ADDITIONAL
+}
+
+enum Booking {
+    EVERYONE
+    NONE
+}
+
+enum Amenities {
+    WIFI
+    TABLES
+    CHAIRS
+    WHITEBOARD
+    CHALKBOARD
+    PROJECTOR
+    SCREEN
+    FLIP_CHARTS
+    MONITOR
+    CONFERENCEPHONE
+    PARKINGSPACES
+    PUBLICTRANSPORTATION
+    RESTROOMS
+    WHEELCHAIRACCESSIBLE
+    BREAKOUTSPACE
+    KITCHEN
+    COFFEE
+    APPLETV
+    PRINTER
+    ROOFTOP
+    OUTDOORAREA
 }

@@ -24,6 +24,7 @@ export const fetchProgress = async (listingId: string) => {
             operatingHoursCompleted: true,
             cancellationPolicyCompleted: true,
             typeOfSpaceCompleted: true,
+            activityCompleted: true,
         }
     });
 

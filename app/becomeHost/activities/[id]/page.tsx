@@ -6,12 +6,28 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { FormProvider } from "react-hook-form";
 import { ActivitiesSchema, useActivitiesForm, } from "@/app/hooks/useActivitiesForm";
+import createActivity from "@/app/actions/createActivity";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
 
 
-export default function Activities() {
+export default function Activities({ params }: { params: { id: string } }) {
+    const listingId = params.id;
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const router = useRouter();
     const formProps = useActivitiesForm();
-    const { handleSubmit,formState:{errors} } = formProps;
-    const onSubmit = (data: ActivitiesSchema) => {
+    const { handleSubmit, formState: { errors } } = formProps;
+    const onSubmit = async (data: ActivitiesSchema) => {
+        setIsSubmitting(true);
+        try {
+            await createActivity(data, listingId);
+            router.push(`/becomeHost/policies/${listingId}`);
+        } catch (error) {
+            console.error("Error submitting form: ", error);
+        } finally {
+            setIsSubmitting(false);
+        }
         console.log(data)
     }
     return <>
@@ -41,18 +57,26 @@ export default function Activities() {
                     </div>
                 </FormProvider>
                 {errors.meeting?.message && (
-                <span className="text-red-500 bg-red-50 p-6 mt-4 -mb-10 font-medium text-lg text-center">{errors.meeting.message}</span>
+                    <span className="text-red-500 bg-red-50 p-6 mt-4 -mb-10 font-medium text-lg text-center">{errors.meeting.message}</span>
                 )}
                 <hr className="border-t border-gray-200 mt-16 mb-10" />
                 <div className="w-full flex justify-between mb-16">
-                    <Link href={`/ becomeHost / createSpace`}>
+                    <Link href={`/becomeHost/cancellationPolicy/${listingId}`}>
                         <Button variant="outline" className="text-md font-semibold">Back</Button>
                     </Link>
                     <Button
                         className="text-md font-semibold bg-[#8559EC] hover:bg-[#7248d1]"
                         onClick={handleSubmit(onSubmit)}
+                        disabled={isSubmitting}
                     >
-                        Next
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Saving...
+                            </>
+                        ) : (
+                            'Next'
+                        )}
                     </Button>
                 </div>
             </div>

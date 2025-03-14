@@ -1,9 +1,10 @@
 "use client"
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Amenities, Booking, CleaningRate } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export enum Amenities {
+export enum AmenitiesEnum {
     WIFI = "WiFi",
     TABLES = "Tables",
     CHAIRS = "Chairs",
@@ -27,15 +28,15 @@ export enum Amenities {
     OUTDOORAREA = "Outdoor Area",
 };
 
-export enum CleaningRate {
-    INCLUDED = "Included",
-    ADDITIONAL = "Additional",
-}
-
-export enum Booking {
-    EVERYONE = "Everyone",
-    NONE = "None",
-}
+//export enum CleaningRate {
+//    INCLUDED = "Included",
+//    ADDITIONAL = "Additional",
+//}
+//
+//export enum Booking {
+//    EVERYONE = "Everyone",
+//    NONE = "None",
+//}
 const meetingSchema = z.discriminatedUnion('enabled', [
     z.object({
         enabled: z.literal(false),
@@ -85,12 +86,12 @@ const meetingSchema = z.discriminatedUnion('enabled', [
         enabled: z.literal(true),
         hourlyRate: z.number({
             required_error: "Hourly Rate is required",
-            invalid_type_error: "Hourly Rate should be a number"
+            invalid_type_error: "Hourly Rate is required",
         })
             .min(100, "Hourly Rate Should be more than 100 Rs"),
         minimumHours: z.number({
             required_error: "Minimum Hours is required",
-            invalid_type_error: "Minimum Hours should be a number"
+            invalid_type_error: "Minimum Hours is required",
         })
             .min(1, "Must be more than 1 hour")
             .max(12, "Must be less than 12 hours"),
@@ -121,7 +122,7 @@ const meetingSchema = z.discriminatedUnion('enabled', [
         ),
         capacity: z.number({
             required_error: "Capacity is required",
-            invalid_type_error: "Capacity should be a number",
+            invalid_type_error: "Capacity is required",
         }),
         customAmenities: z.array(z.string()).optional(),
     })
@@ -185,12 +186,12 @@ const mediaSchema = z.discriminatedUnion('enabled', [
         enabled: z.literal(true),
         hourlyRate: z.number({
             required_error: "Hourly Rate is required",
-            invalid_type_error: "Hourly Rate should be a number"
+            invalid_type_error: "Hourly Rate is required",
         })
             .min(100, "Hourly Rate Should be more than 100 Rs"),
         minimumHours: z.number({
             required_error: "Minimum Hours is required",
-            invalid_type_error: "Minimum Hours should be a number"
+            invalid_type_error: "Minimum Hours is required",
         })
             .min(1, "Must be more than 1 hour")
             .max(12, "Must be less than 12 hours"),
@@ -214,7 +215,7 @@ const mediaSchema = z.discriminatedUnion('enabled', [
         amenities: z.array(z.nativeEnum(Amenities)).min(1, "Select atleast one amenity"),
         capacity: z.number({
             required_error: "Capacity is required",
-            invalid_type_error: "Capacity should be a number",
+            invalid_type_error: "Capacity is required",
         }),
         customAmenities: z.array(z.string()).optional(),
     })
@@ -278,12 +279,12 @@ const eventSchema = z.discriminatedUnion('enabled', [
         enabled: z.literal(true),
         hourlyRate: z.number({
             required_error: "Hourly Rate is required",
-            invalid_type_error: "Hourly Rate should be a number"
+            invalid_type_error: "Hourly Rate is required",
         })
             .min(100, "Hourly Rate Should be more than 100 Rs"),
         minimumHours: z.number({
             required_error: "Minimum Hours is required",
-            invalid_type_error: "Minimum Hours should be a number"
+            invalid_type_error: "Minimum Hours is required",
         })
             .min(1, "Must be more than 1 hour")
             .max(12, "Must be less than 12 hours"),
@@ -307,7 +308,7 @@ const eventSchema = z.discriminatedUnion('enabled', [
         amenities: z.array(z.nativeEnum(Amenities)).min(1, "Select alteast one Amenity"),
         capacity: z.number({
             required_error: "Capacity is required",
-            invalid_type_error: "Capacity should be a number",
+            invalid_type_error: "Capacity is required",
         }),
         customAmenities: z.array(z.string()).optional(),
     })
@@ -322,7 +323,7 @@ const eventSchema = z.discriminatedUnion('enabled', [
         path: ["additionalFee"],
     });
 
-export const amenities = Object.values(Amenities);
+export const amenities = Object.values(AmenitiesEnum);
 
 export type EventSchema = z.infer<typeof eventSchema>
 

@@ -149,7 +149,7 @@ export default function Policy({ params }: { params: { id: string } }) {
 
                                 <hr className="border-t border-gray-200 mt-16 mb-10" />
                                 <div className="w-full flex justify-between mb-16">
-                                    <Link href={`/becomeHost/cancellationPolicy/${listingId}`}>
+                                    <Link href={`/becomeHost/activities/${listingId}`}>
                                         <Button
                                             type="button"
                                             variant={"outline"}

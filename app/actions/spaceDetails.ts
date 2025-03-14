@@ -16,7 +16,7 @@ export async function createSpaceDetails(data: SpaceFormValues, listingId: strin
             id: listingId,
         }
     });
-    if (!listing || listing.userId != session?.user?.id) {
+    if (!listing || listing.userId !== session?.user?.id) {
         return null;
     }
     try {
