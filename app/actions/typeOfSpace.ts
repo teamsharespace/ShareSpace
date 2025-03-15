@@ -25,7 +25,7 @@ export async function createTypeOfSpace(data: ListingFormData, listingId: string
             id: listingId,
         }
     });
-    if (!listing || listing.userId != session?.user?.id) {
+    if (!listing || listing.userId !== session?.user?.id) {
         return null;
     }
     try {

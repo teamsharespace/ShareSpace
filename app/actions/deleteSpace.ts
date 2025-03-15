@@ -2,6 +2,7 @@
 import { getServerSession } from "next-auth";
 import { UserSession } from "./fetchUser";
 import { NEXT_AUTH } from "../lib/auth";
+import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
 export async function deleteSpace(listingId: string) {

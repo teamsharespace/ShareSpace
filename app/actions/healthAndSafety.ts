@@ -1,5 +1,6 @@
 "use server"
 import { getServerSession } from "next-auth"
+import prisma from "@/lib/prisma";
 import { NEXT_AUTH } from "../lib/auth"
 import { UserSession } from "./fetchUser";
 
@@ -14,7 +15,7 @@ export async function createHealthAndSafety(data: any, listingId: string) {
             id: listingId,
         }
     });
-    if (!listing || listing.userId != session?.user?.id) {
+    if (!listing || listing.userId !== session?.user?.id) {
         return null;
     }
 

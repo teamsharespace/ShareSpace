@@ -17,7 +17,7 @@ export async function createCancellationPolicy(data: FormValues, listingId: stri
             id: listingId,
         }
     });
-    if (!listing || listing.userId != session?.user?.id) {
+    if (!listing || listing.userId !== session?.user?.id) {
         return null;
     }
     try {

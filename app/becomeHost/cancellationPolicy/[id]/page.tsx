@@ -84,7 +84,7 @@ export default function CancellationPolicy({params}:{params:{id:string}}) {
         //console.log(data);
         try {
             await createCancellationPolicy(data, listingId);
-            router.push(`/becomeHost/policies/${listingId}`);
+            router.push(`/becomeHost/activities/${listingId}`);
         } catch (error) {
             console.error('Error submitting form:', error);
         }finally{

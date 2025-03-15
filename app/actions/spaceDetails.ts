@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { NEXT_AUTH } from "../lib/auth"
 import { UserSession } from "./fetchUser";
 import { SpaceFormValues } from "../becomeHost/spaceDetails/[id]/page";
+import prisma from "@/lib/prisma";
 import { ParkingOptions } from "@prisma/client";
 
 
@@ -16,7 +17,7 @@ export async function createSpaceDetails(data: SpaceFormValues, listingId: strin
             id: listingId,
         }
     });
-    if (!listing || listing.userId != session?.user?.id) {
+    if (!listing || listing.userId !== session?.user?.id) {
         return null;
     }
     try {

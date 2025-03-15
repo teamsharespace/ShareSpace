@@ -15,7 +15,7 @@ export async function createOperatingHours(data: OperatingHoursValues, listingId
             id: listingId,
         }
     });
-    if (!listing || listing.userId != session?.user?.id) {
+    if (!listing || listing.userId !== session?.user?.id) {
         return null;
     }
     try {

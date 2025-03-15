@@ -23,6 +23,7 @@ export default async function CreateSpace({ params }: { params: { id: string } }
         "Availability",
         "Cleaning",
         "Cancellations",
+        "Activities",
         "Policies"
     ]
     const sections: Array<keyof ListingProgress> = [
@@ -33,6 +34,7 @@ export default async function CreateSpace({ params }: { params: { id: string } }
         "operatingHoursCompleted",
         "healthSafetyCompleted",
         "cancellationPolicyCompleted",
+        "activityCompleted",
         "policiesCompleted"
     ];
     const path = [
@@ -43,6 +45,7 @@ export default async function CreateSpace({ params }: { params: { id: string } }
         "operatingHours",
         "healthAndSafety",
         "cancellationPolicy",
+        "activities",
         "policies",
    ]
 
