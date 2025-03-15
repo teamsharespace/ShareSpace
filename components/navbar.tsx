@@ -45,7 +45,7 @@ export default function Navbar() {
     }, [pathname])
 
     const handleBecomeHost = () => {
-        if (!isLoading) {  // Only handle click if loading is complete
+        if (!isLoading) {
             if (user) {
                 router.push('/becomeHost');
             } else {
@@ -69,6 +69,7 @@ export default function Navbar() {
                     : "fixed bg-black"
             }`}
         >
+
             <div className="flex items-center justify-between px-4 sm:px-6 py-4 mx-auto">
                 <div className="flex flex-row items-center">
                     <Link href="/" className="flex items-center space-x-2">
@@ -91,10 +92,7 @@ export default function Navbar() {
                     <Link href="/spaces" className="text-sm text-white font-medium">
                         Find Spaces
                     </Link>
-                    <div
-                        className="text-sm text-white font-medium cursor-pointer"
-                        onClick={handleBecomeHost}
-                    >
+                    <div className="text-sm text-white font-medium cursor-pointer" onClick={handleBecomeHost}>
                         Become a Host
                     </div>
                     {!session ? (
@@ -102,7 +100,7 @@ export default function Navbar() {
                             <Button
                                 onClick={() => showLoginPopup(true)}
                                 variant="outline"
-                                className="flex items-center"
+                                className="flex items-center text-black"
                             >
                                 Signup
                             </Button>
@@ -170,6 +168,12 @@ export default function Navbar() {
                     <Signup onClose={() => showLoginPopup(false)}/>
                 )}
             </div>
+
+
+
+            {loginPopup && (
+                <Signup onClose={() => showLoginPopup(false)}/>
+            )}
         </nav>
     )
 }

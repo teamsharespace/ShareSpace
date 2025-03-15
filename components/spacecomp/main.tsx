@@ -1,56 +1,62 @@
 'use client';
 
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { Heart, MapPin, Star, Users, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { fetchListings } from "@/app/actions/dashboard/action";
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import dynamic from 'next/dynamic';
-import { Listing } from '@prisma/client';
 import { useRouter } from 'next/navigation';
+import { Listing } from '@prisma/client';
+import dynamic from 'next/dynamic';
 
-const DynamicMap = dynamic(() => import('./Map'), {
-    ssr: false
-});
+// Dynamic Map Import
+const DynamicMap = dynamic(() => import('./Map'), { ssr: false });
 
 function Main() {
-    const [searchAsMove, setSearchAsMove] = useState(true);
     const [showMap, setShowMap] = useState(true);
     const [listings, setListings] = useState<Listing[]>([]);
+    const [isLoading, setIsLoading] = useState(true);  // <-- Add loading state
     const [index, setIndex] = useState(0);
     const router = useRouter();
-    // Fetch listings from backend
+
     useEffect(() => {
         async function loadListings() {
             const data = await fetchListings();
             setListings(data);
-            console.log(data);
+            setIsLoading(false); // <-- Set loading to false once data is fetched
         }
         loadListings();
     }, []);
 
-    const toggleMapVisibility = () => {
-        setShowMap(!showMap);
-    };
     function handlePrevPhoto(event: React.MouseEvent<HTMLElement, MouseEvent>) {
         event.stopPropagation();
-        if(index > 0) setIndex(index - 1);
-        else setIndex(3);
+        setIndex(index > 0 ? index - 1 : 3);
     }
 
-    // For form submissions
     function handleNextPhoto(event: React.MouseEvent<HTMLElement, MouseEvent>) {
         event.stopPropagation();
-        if(index < 3) setIndex(index + 1);
-        else setIndex(0);
+        setIndex(index < 3 ? index + 1 : 0);
     }
+
     return (
         <div className="w-full mt-40">
             <div className={showMap ? 'grid lg:grid-cols-[2fr_1fr] gap-4' : ''}>
-                {/* Left Side - Listings */}
                 <div className={`grid gap-6 mx-5 my-5 ${showMap ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'}`}>
-                    {listings?.map((listing) => (
+                    
+                {isLoading &&
+    Array.from({ length: 4 }).map((_, i) => (
+        <div key={i} className="animate-pulse space-y-3">
+            <div className="h-80 bg-gray-300 rounded-xl"></div>
+            
+            <div className="h-4 w-3/4 bg-gray-300 rounded"></div>
+            <div className="h-4 w-1/2 bg-gray-300 rounded"></div>
+        </div>
+    ))
+}
+
+
+
+                    {/* Actual Listings */}
+                    {!isLoading && listings?.map((listing) => (
                         <div
                             key={listing.id}
                             className="group relative cursor-pointer"
@@ -104,7 +110,7 @@ function Main() {
                         </div>
                     ))}
                 </div>
-                {/* {showMap && (
+                  {/* {showMap && (
           <div className="hidden lg:block sticky top-[4.5rem] h-[calc(100vh-4.5rem)]">
             <div className="h-full rounded-lg border bg-card p-4">
               <div className="flex items-center justify-between mb-4">
@@ -141,9 +147,13 @@ function Main() {
             <span>Show Map</span>
           </Button>
         )}*/}
+
             </div>
         </div>
     );
 }
 
 export default Main;
+
+
+     
