@@ -1,21 +1,19 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Navbar from "@/components/navbar";
-import { useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
 import RunningProjectsSection from "@/components/RunningProjectsSection";
 
-// Define an array of hero images relevant to Indian spaces
-const heroImages = [
-  "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80", // Modern Indian office space
-];
+// Single hero image - removed array since only one was being used
+const HERO_IMAGE = "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80";
 
+// Activities data - unchanged as it contains necessary information
 const activities = [
   {
     id: "photo-shoot",
@@ -127,6 +125,7 @@ const activities = [
   },
 ];
 
+// Footer links data
 const footerLinks = [
   {
     title: "Company",
@@ -142,17 +141,24 @@ const footerLinks = [
   },
 ];
 
-const randomHeroImage = heroImages[Math.floor(Math.random() * heroImages.length)];
+// Social media links - extracted for DRY principle
+const socialLinks = ["Facebook", "Twitter", "Instagram", "LinkedIn"];
+
+// Auto-rotate interval in milliseconds - extracted as constant
+const AUTO_ROTATE_INTERVAL = 3000;
+const AUTO_ROTATE_RESUME_DELAY = 5000;
 
 export default function Home() {
+  // Refs for scroll animations
   const heroRef = useRef(null);
   const featuredRef = useRef(null);
   const hostRef = useRef(null);
-  const [headerSize] = useState(1.2);
-  const [textSize] = useState(0.8);
+  
+  // State management
   const [selectedActivity, setSelectedActivity] = useState(activities[0]);
   const [autoRotate, setAutoRotate] = useState(true);
 
+  // Scroll animations setup
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
@@ -168,14 +174,27 @@ export default function Home() {
     offset: ["start end", "end start"],
   });
 
+  // Transform values for parallax effects
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const featuredY = useTransform(featuredProgress, [0, 1], [100, -100]);
   const hostY = useTransform(hostProgress, [0, 1], [100, -100]);
 
+  // Memoize activity chunks to prevent unnecessary recalculations
+  const activityChunks = useMemo(() => {
+    const chunks = [];
+    const chunkSize = 4;
+    for (let i = 0; i < activities.length; i += chunkSize) {
+      chunks.push(activities.slice(i, i + chunkSize));
+    }
+    return chunks;
+  }, []);
+
+  // Set smooth scrolling behavior on component mount
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth";
   }, []);
 
+  // Auto-rotate activity carousel
   useEffect(() => {
     if (!autoRotate) return;
 
@@ -185,43 +204,33 @@ export default function Home() {
       );
       const nextIndex = (currentIndex + 1) % activities.length;
       setSelectedActivity(activities[nextIndex]);
-    }, 3000); // Slowed down rotation for better user experience
+    }, AUTO_ROTATE_INTERVAL);
 
     return () => clearInterval(interval);
   }, [selectedActivity, autoRotate]);
 
-  // Pause auto-rotation when user interacts with the categories
+  // Handle activity selection and auto-rotation pause/resume
   const handleActivityClick = (activity) => {
     setSelectedActivity(activity);
     setAutoRotate(false);
 
-    // Resume auto-rotation after 5 seconds of inactivity
+    // Resume auto-rotation after delay
     const timer = setTimeout(() => {
       setAutoRotate(true);
-    }, 5000);
+    }, AUTO_ROTATE_RESUME_DELAY);
 
     return () => clearTimeout(timer);
   };
 
-  // Function to chunk activities for mobile layout
-  const chunkActivities = (activities, size) => {
-    const chunks = [];
-    for (let i = 0; i < activities.length; i += size) {
-      chunks.push(activities.slice(i, i + size));
-    }
-    return chunks;
-  };
-
-  const activityChunks = chunkActivities(activities, 4);
-
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
       <Navbar />
+      
       {/* Hero Section */}
       <section ref={heroRef} className="relative h-screen overflow-hidden">
         <motion.div style={{ y }} className="absolute inset-0">
           <Image
-            src={randomHeroImage}
+            src={HERO_IMAGE}
             alt="Premium Indian venue"
             fill
             className="object-cover"
@@ -237,6 +246,7 @@ export default function Home() {
               className={`w-2 h-2 md:w-3 md:h-3 rounded-full ${
                 i === 0 ? "bg-white" : "border border-white/50"
               }`}
+              aria-label={`Slide ${i + 1}`}
             />
           ))}
         </div>
@@ -266,7 +276,9 @@ export default function Home() {
           </div>
         </motion.div>
       </section>
+      
       <RunningProjectsSection />
+      
       {/* Categories Section */}
       <section ref={featuredRef} className="relative min-h-screen overflow-hidden bg-black text-white py-12 md:py-24">
         <main className="container mx-auto px-4 md:px-6 py-8 md:py-12">
@@ -368,6 +380,7 @@ export default function Home() {
                 <button
                   onClick={() => setAutoRotate(!autoRotate)}
                   className="bg-white/20 hover:bg-white/40 rounded-full p-2 transition-colors"
+                  aria-label={autoRotate ? "Pause rotation" : "Start rotation"}
                 >
                   {autoRotate ? (
                     <svg
@@ -376,6 +389,7 @@ export default function Home() {
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
+                      aria-hidden="true"
                     >
                       <path
                         strokeLinecap="round"
@@ -391,6 +405,7 @@ export default function Home() {
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
+                      aria-hidden="true"
                     >
                       <path
                         strokeLinecap="round"
@@ -413,75 +428,75 @@ export default function Home() {
         </main>
       </section>
 
-     {/* Host Section */}
-<section ref={hostRef} className="relative min-h-screen bg-black text-white py-16 md:py-24">
-  <main className="container mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
-      {/* Left Column - Image */}
-      <div className="relative aspect-video md:aspect-square w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] order-2 md:order-1">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          style={{ y: hostY }}
-          className="h-full w-full relative rounded-lg overflow-hidden"
-        >
-          <Image
-            src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-            alt="Peerspace host in a vibrant pink room with a dining table"
-            fill
-            className="object-cover rounded-lg"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-        </motion.div>
-      </div>
+      {/* Host Section */}
+      <section ref={hostRef} className="relative min-h-screen bg-black text-white py-16 md:py-24">
+        <main className="container mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
+            {/* Left Column - Image */}
+            <div className="relative aspect-video md:aspect-square w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] order-2 md:order-1">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8 }}
+                style={{ y: hostY }}
+                className="h-full w-full relative rounded-lg overflow-hidden"
+              >
+                <Image
+                  src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+                  alt="SpaceSphere host in a vibrant pink room with a dining table"
+                  fill
+                  className="object-cover rounded-lg"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              </motion.div>
+            </div>
 
-      {/* Right Column - Content */}
-      <div className="space-y-6 md:space-y-10 order-1 md:order-2">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4">
-            Earn income as a SpaceShere host
-          </h2>
-          <p className="text-xl md:text-2xl mb-4">Put your space to work.</p>
-          <p className="text-base md:text-xl mb-8 max-w-lg">
-            Earn extra income by opening your doors to personal and professional gatherings in your area. Our hosts earn an average of ₹45,000 per month sharing their spaces.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link
-              href="/becomeHost"
-              className="inline-block px-6 py-3 md:px-8 md:py-4 bg-white text-black font-medium hover:bg-gray-100 transition-colors text-center text-lg"
-            >
-              List your space
-            </Link>
-            <Button
-              variant="outline"
-              className="px-6 py-3 md:px-8 md:py-4 border-white text-white hover:bg-white/10 text-lg transition-colors"
-            >
-              Learn more
-            </Button>
+            {/* Right Column - Content */}
+            <div className="space-y-6 md:space-y-10 order-1 md:order-2">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4">
+                  Earn income as a SpaceSphere host
+                </h2>
+                <p className="text-xl md:text-2xl mb-4">Put your space to work.</p>
+                <p className="text-base md:text-xl mb-8 max-w-lg">
+                  Earn extra income by opening your doors to personal and professional gatherings in your area. Our hosts earn an average of ₹45,000 per month sharing their spaces.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link
+                    href="/becomeHost"
+                    className="inline-block px-6 py-3 md:px-8 md:py-4 bg-white text-black font-medium hover:bg-gray-100 transition-colors text-center text-lg"
+                  >
+                    List your space
+                  </Link>
+                  <Button
+                    variant="outline"
+                    className="px-6 py-3 md:px-8 md:py-4 border-white text-white hover:bg-white/10 text-lg transition-colors"
+                  >
+                    Learn more
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
           </div>
-        </motion.div>
-      </div>
-    </div>
-  </main>
-</section>
+        </main>
+      </section>
 
       {/* Footer Section */}
       <footer className="bg-black text-white py-16 md:py-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
             <div className="md:col-span-4 space-y-6">
-              <Image src="/poliform-logo.svg" alt="SpaceShere" width={180} height={60} className="mb-6 invert" />
+              <Image src="/poliform-logo.svg" alt="SpaceSphere" width={180} height={60} className="mb-6 invert" />
               <p className="text-neutral-400 text-lg mb-8 max-w-md">
                 Creating spaces of extraordinary sophistication through our curated collection of contemporary furniture and design pieces for every occasion.
               </p>
               <div className="flex flex-wrap gap-6">
-                {["Facebook", "Twitter", "Instagram", "LinkedIn"].map((social) => (
+                {socialLinks.map((social) => (
                   <a key={social} href="#" className="text-neutral-400 hover:text-white text-lg transition-colors">
                     {social}
                   </a>
@@ -510,6 +525,7 @@ export default function Home() {
                   type="email"
                   placeholder="Your email address"
                   className="bg-white/10 border-white/20 text-white placeholder-white/50 h-12 text-lg rounded-none"
+                  aria-label="Email address"
                 />
                 <Button
                   type="submit"
@@ -526,7 +542,7 @@ export default function Home() {
           </div>
           <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-neutral-400 text-center md:text-left">
-              © 2025 SpaceShere. All rights reserved.
+              © 2025 SpaceSphere. All rights reserved.
             </p>
             <div className="flex gap-6">
               <a href="#" className="text-neutral-400 hover:text-white transition-colors">Privacy Policy</a>
