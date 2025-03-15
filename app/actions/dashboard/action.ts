@@ -4,6 +4,8 @@ import prisma from "@/lib/prisma";
 
 
 export async function fetchListings() {
-  return await prisma.listing.findMany();
+  return await prisma.listing.findMany({
+        cacheStrategy: {ttl: 60},
+    });
 }
 
