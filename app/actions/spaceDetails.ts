@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { NEXT_AUTH } from "../lib/auth"
 import { UserSession } from "./fetchUser";
 import { SpaceFormValues } from "../becomeHost/spaceDetails/[id]/page";
+import prisma from "@/lib/prisma";
 import { ParkingOptions } from "@prisma/client";
 
 

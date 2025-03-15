@@ -1,5 +1,6 @@
 "use server"
 import { getServerSession } from "next-auth"
+import prisma from "@/lib/prisma";
 import { NEXT_AUTH } from "../lib/auth"
 import { UserSession } from "./fetchUser";
 
