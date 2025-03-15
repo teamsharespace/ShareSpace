@@ -48,7 +48,6 @@ export default async function CreateSpace({ params }: { params: { id: string } }
         "activities",
         "policies",
    ]
-    console.log("Activity completed status:", progress.activityCompleted);
 
     const completedSections = sections.filter(section => progress?.[section]).length;
     const progressPercentage = (completedSections / sections.length) * 100;
